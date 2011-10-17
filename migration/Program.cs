@@ -1,42 +1,90 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.Xml;
+using Microsoft.SqlServer.Management.Smo;
+using Microsoft.SqlServer.Management.Common;
 
 namespace migration
 {
+    public class Config // OK
+    {
+        static internal void Load()
+        {
+            using (XmlReader reader = XmlReader.Create("migration.conf"))
+            {
+                while (reader.Read())
+                {
+                    switch (reader.NodeType)
+                    {
+                        case XmlNodeType.Element:
+                            switch (reader.Name)
+                            {
+                                case "serverName":
+                                    reader.Read();
+                                    Config.serverName = reader.Value;
+                                    break;
+                                case "databaseName":
+                                    reader.Read();
+                                    Config.databaseName = reader.Value;
+                                    break;
+                            }
+                            break;
+                        case XmlNodeType.Text:
+                        case XmlNodeType.XmlDeclaration:
+                        case XmlNodeType.ProcessingInstruction:
+                        case XmlNodeType.Comment:
+                        case XmlNodeType.EndElement:
+                            break;
+                    }
+                }
+            }
+            if ((Config.serverName.Trim() == "") || (Config.databaseName.Trim() == ""))
+                throw new System.ArgumentException("Ошибочный файл настроек программы.\nПерезапустите генератор файла конфигурации.");
+        }
+        static public string serverName { get; set; }
+        static public string databaseName { get; set; }
+    }
     class Program
     {
         static void Main(string[] args)
         {
-            // TODO: загрузить настройки соединения с СУБД и системой контроля версий
-            SqlConnection connection = new SqlConnection(@"Data Source=.\SQLEXPRESS;Integrated Security=True");
-            if (args.Length == 0)
+            try
             {
-                migration.Program.PrintWrongMessage();
-            }
-            else
-            {
-                switch (args[0])
+                Config.Load();
+                if (args.Length == 0)
                 {
-                    case "--init":
-                        migration.Program.Init();
-                        break;
-                    case "--state-fix":
-                        migration.Program.StateFix();
-                        break;
-                    case "--migration-up":
-                        migration.Program.MigrationUp();
-                        break;
-                    case "--migration-down":
-                        migration.Program.MigrationDown();
-                        break;
-                    case "--help":
-                        migration.Program.PrintHelp();
-                        break;
-                    default:
-                        PrintWrongMessage();
-                        break;
+                    migration.Program.PrintWrongMessage();
+                }
+                else
+                {
+                    switch (args[0])
+                    {
+                        case "--init":
+                            migration.Program.Init();
+                            break;
+                        case "--state-fix":
+                            migration.Program.StateFix();
+                            break;
+                        case "--migration-up":
+                            migration.Program.MigrationUp();
+                            break;
+                        case "--migration-down":
+                            migration.Program.MigrationDown();
+                            break;
+                        case "--help":
+                            migration.Program.PrintHelp();
+                            break;
+                        default:
+                            PrintWrongMessage();
+                            break;
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            
         }
         private static void PrintWrongMessage()
         {
@@ -68,7 +116,16 @@ namespace migration
         }
         private static void Init()
         {
-            
+            try
+            {
+                Server server = new Server(Config.serverName);
+                Database database = server.Databases[Config.databaseName];
+                
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
     }
 }

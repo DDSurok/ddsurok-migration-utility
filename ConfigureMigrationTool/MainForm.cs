@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 using Microsoft.SqlServer.Management.Smo;
+using System.Xml;
+using System;
 
 namespace ConfigureMigrationTool
 {
@@ -50,6 +52,46 @@ namespace ConfigureMigrationTool
             this.DatabaseComboBox.DataSource = this._databaseList;
             this.DatabaseComboBox.EndUpdate();
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        private void ExportConfigure()
+        {
+            XmlWriterSettings settings = new XmlWriterSettings();
+
+            // включаем отступ для элементов XML документа
+            // (позволяет наглядно изобразить иерархию XML документа)
+            settings.Indent = true;
+            settings.IndentChars = "  "; // задаем отступ, здесь у меня 2 пробела
+
+            // задаем переход на новую строку
+            settings.NewLineChars = "\n";
+
+            // Нужно ли опустить строку декларации формата XML документа
+            // речь идет о строке вида "<?xml version="1.0" encoding="utf-8"?>"
+            settings.OmitXmlDeclaration = false;
+            
+            // FileName - имя файла, куда будет сохранен XML-документ
+            // settings - настройки форматирования (и не только) вывода
+            // (рассмотрен выше)
+            using (XmlWriter output = XmlWriter.Create("migration.conf", settings))
+            {
+                // Создали открывающийся тег
+                output.WriteStartElement("MigrationConfigure");
+                
+                // Создаем элемент connectionString
+                output.WriteElementString("serverName", this.ServerComboBox.SelectedItem.ToString());
+
+                // Создаем элемент databaseName
+                output.WriteElementString("databaseName", this.DatabaseComboBox.SelectedItem.ToString());
+ 
+                // Сбрасываем буфферизированные данные
+                output.Flush();
+ 
+                // Закрываем фаил, с которым связан output
+                output.Close();
+}
+        }
         
         private void btnUpdateServerList_Click(object sender, System.EventArgs e)
         {
@@ -59,6 +101,22 @@ namespace ConfigureMigrationTool
         private void btnUpdateDatabaseList_Click(object sender, System.EventArgs e)
         {
             this.ReloadDatabaseList();
+        }
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            if ((this.ServerComboBox.SelectedIndex > -1) && (this.DatabaseComboBox.SelectedIndex > -1))
+            {
+                try
+                {
+                    this.ExportConfigure();
+                    MessageBox.Show("Файл конфигурации успешно создан");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+            }
         }
     }
 }

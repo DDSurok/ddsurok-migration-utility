@@ -34,6 +34,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.btnUpdateDatabaseList = new System.Windows.Forms.Button();
             this.DatabaseComboBox = new System.Windows.Forms.ComboBox();
+            this.btnExport = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ServerComboBox
@@ -92,11 +93,22 @@
             this.DatabaseComboBox.Size = new System.Drawing.Size(428, 21);
             this.DatabaseComboBox.TabIndex = 3;
             // 
+            // btnExport
+            // 
+            this.btnExport.Location = new System.Drawing.Point(438, 71);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(151, 23);
+            this.btnExport.TabIndex = 6;
+            this.btnExport.Text = "Export configure";
+            this.btnExport.UseVisualStyleBackColor = true;
+            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(601, 291);
+            this.Controls.Add(this.btnExport);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btnUpdateDatabaseList);
             this.Controls.Add(this.DatabaseComboBox);
@@ -118,6 +130,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnUpdateDatabaseList;
         private System.Windows.Forms.ComboBox DatabaseComboBox;
+        private System.Windows.Forms.Button btnExport;
     }
 }
 
