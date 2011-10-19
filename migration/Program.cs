@@ -159,26 +159,23 @@ namespace migration
                         smoObj[0] = table;
                         Scripter scriptor = new Scripter(server);
                         scriptor.Options.AllowSystemObjects = false;
-                        scriptor.Options.AnsiPadding = false;
-                        scriptor.Options.IncludeIfNotExists = true;
                         scriptor.Options.Indexes = true;
-                        scriptor.Options.NoCommandTerminator = false;
                         scriptor.Options.DriAll = true;
-                        scriptor.Options.ScriptDrops = true;
+                        scriptor.Options.Default = true;
                         scriptor.Options.WithDependencies = true;
-                        scriptor.PrefetchObjects = false;
+                        scriptor.Options.ScriptSchema = true;
                         strCollection = scriptor.Script(smoObj);
                         output.WriteStartElement("script");
-                        output.WriteString("");
+                        output.WriteString("\n");
                         foreach (string s in strCollection)
                         {
-                            output.WriteString(s);
+                            output.WriteString(s.Trim() + "\n");
                         }
                         output.WriteEndElement();
                     }
                     output.WriteEndElement();
 
-                    /*// Сохранение информации о правилах
+                    // Сохранение информации о правилах
 
                     // Создали открывающийся тег
                     output.WriteStartElement("Rules");
@@ -192,10 +189,10 @@ namespace migration
                         Scripter scriptor = new Scripter(server);
                         strCollection = scriptor.Script(smoObj);
                         output.WriteStartElement("script");
-                        output.WriteString("");
+                        output.WriteString("\n");
                         foreach (string s in strCollection)
                         {
-                            output.WriteString(s);
+                            output.WriteString(s.Trim() + "\n");
                         }
                         output.WriteEndElement();
                     }
@@ -215,10 +212,10 @@ namespace migration
                         Scripter scriptor = new Scripter(server);
                         strCollection = scriptor.Script(smoObj);
                         output.WriteStartElement("script");
-                        output.WriteString("");
+                        output.WriteString("\n");
                         foreach (string s in strCollection)
                         {
-                            output.WriteString(s);
+                            output.WriteString(s.Trim() + "\n");
                         }
                         output.WriteEndElement();
                     }
@@ -240,15 +237,15 @@ namespace migration
                             Scripter scriptor = new Scripter(server);
                             strCollection = scriptor.Script(smoObj);
                             output.WriteStartElement("script");
-                            output.WriteString("");
+                            output.WriteString("\n");
                             foreach (string s in strCollection)
                             {
-                                output.WriteString(s);
+                                output.WriteString(s.Trim() + "\n");
                             }
                             output.WriteEndElement();
                         }
                     }
-                    output.WriteEndElement();*/
+                    output.WriteEndElement();
 
                     output.WriteEndElement();
                 }
