@@ -158,8 +158,15 @@ namespace migration
                         SqlSmoObject[] smoObj = new SqlSmoObject[1];
                         smoObj[0] = table;
                         Scripter scriptor = new Scripter(server);
-                        scriptor.Options.ScriptDrops = false;
+                        scriptor.Options.AllowSystemObjects = false;
+                        scriptor.Options.AnsiPadding = false;
+                        scriptor.Options.IncludeIfNotExists = true;
+                        scriptor.Options.Indexes = true;
+                        scriptor.Options.NoCommandTerminator = false;
+                        scriptor.Options.DriAll = true;
+                        scriptor.Options.ScriptDrops = true;
                         scriptor.Options.WithDependencies = true;
+                        scriptor.PrefetchObjects = false;
                         strCollection = scriptor.Script(smoObj);
                         output.WriteStartElement("script");
                         output.WriteString("");
@@ -171,7 +178,7 @@ namespace migration
                     }
                     output.WriteEndElement();
 
-                    // Сохранение информации о правилах
+                    /*// Сохранение информации о правилах
 
                     // Создали открывающийся тег
                     output.WriteStartElement("Rules");
@@ -241,7 +248,7 @@ namespace migration
                             output.WriteEndElement();
                         }
                     }
-                    output.WriteEndElement();
+                    output.WriteEndElement();*/
 
                     output.WriteEndElement();
                 }
