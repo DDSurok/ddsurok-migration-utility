@@ -39,6 +39,12 @@ namespace migration
                     // Пишем информацию в XML о типе записи
                     Init.WriteXMLHeader(output);
 
+                    // Инициализируем сервер на работу с нашей программой
+                    Init.InitialServer(server);
+
+                    // Инициализируем базу данных на работу с нашей программой
+                    Init.InitialDatabase(database);
+
                     // Сохранение информации о таблицах
                     // Собственно схемы таблиц
                     Init.GenerateTableScripts(output, database);
@@ -69,6 +75,51 @@ namespace migration
                 Console.WriteLine(ex.ToString());
                 Console.ReadKey(true);
             }
+        }
+
+        private static void InitialServer(Server server)
+        {
+            
+        }
+
+        private static void InitialDatabase(Database database)
+        {
+            StringCollection strCol = new StringCollection();
+            //strCol.Add("create login ddsurok");
+            //strCol.Add("with password = 'ddsurok';");
+            strCol.Add("use proba;");
+            strCol.Add("create user ddsurok without login;");
+            strCol.Add("go");
+            strCol.Add("execute as user = 'ddsurok'");
+            strCol.Add("go");
+            //strCol.Add("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[ddsurok].[Customer]') AND type in (N'U'))");
+            //strCol.Add("DROP TABLE [dbo].[Customer]");
+            //strCol.Add("");
+            //strCol.Add("");
+            //strCol.Add("");
+            //strCol.Add("");
+            //strCol.Add("");
+            //strCol.Add("");
+            strCol.Add("CREATE SCHEMA [ddsurok] AUTHORIZATION [ddsurok]");
+            strCol.Add("GO");
+            strCol.Add("CREATE TABLE [ddsurok].[up]");
+            strCol.Add("(");
+            strCol.Add("id int NOT NULL IDENTITY(1, 1) PRIMARY KEY,");
+            strCol.Add("script text NOT NULL");
+            strCol.Add(") ON");
+            strCol.Add("GO");
+            strCol.Add("CREATE TABLE [ddsurok].[down]");
+            strCol.Add("(");
+            strCol.Add("id int NOT NULL IDENTITY(1, 1) PRIMARY KEY,");
+            strCol.Add("script text NOT NULL");
+            strCol.Add(") ON");
+            strCol.Add("GO");
+            //strCol.Add("CREATE TRIGGER ddl_all_changes_log");
+            //strCol.Add("AS DATABASE");
+            //strCol.Add("");
+            //strCol.Add("");
+            
+            database.ExecuteNonQuery(strCol);
         }
 
         private static void WriteXMLHeader(XmlWriter output)
