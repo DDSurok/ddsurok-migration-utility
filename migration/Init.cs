@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using System.Xml;
 using Microsoft.SqlServer.Management.Smo;
 using Microsoft.SqlServer.Management.Common;
@@ -85,40 +86,17 @@ namespace migration
         private static void InitialDatabase(Database database)
         {
             StringCollection strCol = new StringCollection();
-            //strCol.Add("create login ddsurok");
-            //strCol.Add("with password = 'ddsurok';");
-            strCol.Add("use proba;");
-            strCol.Add("create user ddsurok without login;");
-            strCol.Add("go");
-            strCol.Add("execute as user = 'ddsurok'");
-            strCol.Add("go");
-            //strCol.Add("IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[ddsurok].[Customer]') AND type in (N'U'))");
-            //strCol.Add("DROP TABLE [dbo].[Customer]");
-            //strCol.Add("");
-            //strCol.Add("");
-            //strCol.Add("");
-            //strCol.Add("");
-            //strCol.Add("");
-            //strCol.Add("");
-            strCol.Add("CREATE SCHEMA [ddsurok] AUTHORIZATION [ddsurok]");
-            strCol.Add("GO");
-            strCol.Add("CREATE TABLE [ddsurok].[up]");
-            strCol.Add("(");
-            strCol.Add("id int NOT NULL IDENTITY(1, 1) PRIMARY KEY,");
-            strCol.Add("script text NOT NULL");
-            strCol.Add(") ON");
-            strCol.Add("GO");
-            strCol.Add("CREATE TABLE [ddsurok].[down]");
-            strCol.Add("(");
-            strCol.Add("id int NOT NULL IDENTITY(1, 1) PRIMARY KEY,");
-            strCol.Add("script text NOT NULL");
-            strCol.Add(") ON");
-            strCol.Add("GO");
-            //strCol.Add("CREATE TRIGGER ddl_all_changes_log");
-            //strCol.Add("AS DATABASE");
-            //strCol.Add("");
-            //strCol.Add("");
             
+            using (TextReader reader = File.OpenText("migration/InitScript.sql"))
+            {
+                string s = "";
+                do
+                {
+                    s = reader.ReadLine();
+                    if (s != null) if (s.Trim() != "") strCol.Add(s.Trim());
+                } while (s != null);
+            }
+
             database.ExecuteNonQuery(strCol);
         }
 
