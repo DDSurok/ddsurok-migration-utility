@@ -69,7 +69,9 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="InitScript.sql" />
+    <Content Include="CreateDDLTriggers.sql" />
+    <Content Include="IfExists.sql" />
+    <Content Include="CreateSchema.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

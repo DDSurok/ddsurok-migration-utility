@@ -82,12 +82,24 @@ namespace migration
         {
             
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="database"></param>
         private static void InitialDatabase(Database database)
         {
+            database.ExecuteNonQuery(Init.LoadFileToStringCollection("migration/IfExists.sql")/*, ExecutionTypes.ContinueOnError*/);
+
+            database.ExecuteNonQuery(Init.LoadFileToStringCollection("migration/CreateSchema.sql")/*, ExecutionTypes.ContinueOnError*/);
+
+            database.ExecuteNonQuery(Init.LoadFileToStringCollection("migration/CreateDDLTriggers.sql")/*, ExecutionTypes.ContinueOnError*/);
+        }
+
+        private static StringCollection LoadFileToStringCollection(string fileName)
+        {
             StringCollection strCol = new StringCollection();
-            
-            using (TextReader reader = File.OpenText("migration/InitScript.sql"))
+
+            using (TextReader reader = File.OpenText(fileName))
             {
                 string s = "";
                 do
@@ -96,8 +108,7 @@ namespace migration
                     if (s != null) if (s.Trim() != "") strCol.Add(s.Trim());
                 } while (s != null);
             }
-
-            database.ExecuteNonQuery(strCol);
+            return strCol;
         }
 
         private static void WriteXMLHeader(XmlWriter output)
