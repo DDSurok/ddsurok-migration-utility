@@ -69,6 +69,7 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CreateTables.sql" />
     <Content Include="CreateDDLTriggers.sql" />
     <Content Include="IfExists.sql" />
     <Content Include="CreateSchema.sql" />

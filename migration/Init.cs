@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections.Specialized;
+using System.Data.SqlClient;
 using System.IO;
 using System.Xml;
 using Microsoft.SqlServer.Management.Smo;
-using Microsoft.SqlServer.Management.Common;
-using System.Collections.Specialized;
 
 namespace migration
 {
     static class Init
     {
+        /// <summary>
+        /// Основной метод класса
+        /// </summary>
         internal static void Run()
         {
             try
@@ -40,11 +40,8 @@ namespace migration
                     // Пишем информацию в XML о типе записи
                     Init.WriteXMLHeader(output);
 
-                    // Инициализируем сервер на работу с нашей программой
-                    Init.InitialServer(server);
-
                     // Инициализируем базу данных на работу с нашей программой
-                    Init.InitialDatabase(database);
+                    Init.InitialDatabase();
 
                     // Сохранение информации о таблицах
                     // Собственно схемы таблиц
@@ -77,27 +74,35 @@ namespace migration
                 Console.ReadKey(true);
             }
         }
-
-        private static void InitialServer(Server server)
+        /// <summary>
+        /// Заполняем базу таблицами необходимыми для работы таблицами и триггерами
+        /// </summary>
+        private static void InitialDatabase()
         {
-            
+            using (SqlConnection connection = new SqlConnection("Data Source=" + Config.serverName + ";Integrated Security=True"))
+            {
+                connection.Open();
+                connection.ChangeDatabase(Config.databaseName);
+                SqlCommand command = connection.CreateCommand();
+                command.CommandText = Init.LoadFileToStringCollection("migration/IfExists.sql");
+                command.ExecuteNonQuery();
+                command.CommandText = Init.LoadFileToStringCollection("migration/CreateSchema.sql");
+                command.ExecuteNonQuery();
+                command.CommandText = Init.LoadFileToStringCollection("migration/CreateTables.sql");
+                command.ExecuteNonQuery();
+                command.CommandText = Init.LoadFileToStringCollection("migration/CreateDDLTriggers.sql");
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
         }
         /// <summary>
-        /// 
+        /// Загружает содержимое файла в одну строку
         /// </summary>
-        /// <param name="database"></param>
-        private static void InitialDatabase(Database database)
+        /// <param name="fileName">Имя файла, содержимое которого надо загрузить</param>
+        /// <returns>Содержимое файла, преобразованное в одну строку через пробел</returns>
+        private static string LoadFileToStringCollection(string fileName)
         {
-            database.ExecuteNonQuery(Init.LoadFileToStringCollection("migration/IfExists.sql")/*, ExecutionTypes.ContinueOnError*/);
-
-            database.ExecuteNonQuery(Init.LoadFileToStringCollection("migration/CreateSchema.sql")/*, ExecutionTypes.ContinueOnError*/);
-
-            database.ExecuteNonQuery(Init.LoadFileToStringCollection("migration/CreateDDLTriggers.sql")/*, ExecutionTypes.ContinueOnError*/);
-        }
-
-        private static StringCollection LoadFileToStringCollection(string fileName)
-        {
-            StringCollection strCol = new StringCollection();
+            string retStr = "";
 
             using (TextReader reader = File.OpenText(fileName))
             {
@@ -105,12 +110,15 @@ namespace migration
                 do
                 {
                     s = reader.ReadLine();
-                    if (s != null) if (s.Trim() != "") strCol.Add(s.Trim());
+                    if (s != null) if (s.Trim() != "") retStr += s.Trim() + " ";
                 } while (s != null);
             }
-            return strCol;
+            return retStr;
         }
-
+        /// <summary>
+        /// Записываем заголовок файла конфигурации
+        /// </summary>
+        /// <param name="output">Дескриптор файла, в который нужно записать заголовок</param>
         private static void WriteXMLHeader(XmlWriter output)
         {
             output.WriteStartDocument();
@@ -120,7 +128,12 @@ namespace migration
             output.WriteAttributeString("Create_time", DateTime.Now.ToShortTimeString());
             output.WriteAttributeString("Version", 1.ToString("0000"));
         }
-
+        /// <summary>
+        /// Генерирует скрипты создания хранимых процедур и пишет их в <code>output</code>
+        /// </summary>
+        /// <param name="output">Дескриптор файла, в который записываются хранимые процедуры</param>
+        /// <param name="server">Сервер, на котором хранится база данных</param>
+        /// <param name="database">Контролируемая база данных</param>
         private static void GenerateStoredProcScripts(XmlWriter output, Server server, Database database)
         {
             // Создали открывающийся тег
@@ -152,7 +165,12 @@ namespace migration
             }
             output.WriteEndElement();
         }
-
+        /// <summary>
+        /// Генерирует скрипты создания ролей и пишет их в <code>output</code>
+        /// </summary>
+        /// <param name="output">Дескриптор файла, в который записываются хранимые процедуры</param>
+        /// <param name="server">Сервер, на котором хранится база данных</param>
+        /// <param name="database">Контролируемая база данных</param>
         private static void GenerateRoleScripts(XmlWriter output, Server server, Database database)
         {
             // Создали открывающийся тег
@@ -178,7 +196,12 @@ namespace migration
             }
             output.WriteEndElement();
         }
-
+        /// <summary>
+        /// Генерирует скрипты создания правил и пишет их в <code>output</code>
+        /// </summary>
+        /// <param name="output">Дескриптор файла, в который записываются хранимые процедуры</param>
+        /// <param name="server">Сервер, на котором хранится база данных</param>
+        /// <param name="database">Контролируемая база данных</param>
         private static void GenerateRuleScripts(XmlWriter output, Database database)
         {
             // Создали открывающийся тег
@@ -207,7 +230,12 @@ namespace migration
             }
             output.WriteEndElement();
         }
-
+        /// <summary>
+        /// Генерирует скрипты создания таблиц и пишет их в <code>output</code>
+        /// </summary>
+        /// <param name="output">Дескриптор файла, в который записываются хранимые процедуры</param>
+        /// <param name="server">Сервер, на котором хранится база данных</param>
+        /// <param name="database">Контролируемая база данных</param>
         private static void GenerateTableScripts(XmlWriter output, Database database)
         {
             // Создали открывающийся тег
@@ -236,7 +264,12 @@ namespace migration
             }
             output.WriteEndElement();
         }
-
+        /// <summary>
+        /// Генерирует скрипты создания триггеров и пишет их в <code>output</code>
+        /// </summary>
+        /// <param name="output">Дескриптор файла, в который записываются хранимые процедуры</param>
+        /// <param name="server">Сервер, на котором хранится база данных</param>
+        /// <param name="database">Контролируемая база данных</param>
         private static void GenerateTriggerScripts(XmlWriter output, Database database)
         {
             // Создали открывающийся тег
@@ -267,7 +300,12 @@ namespace migration
             }
             output.WriteEndElement();
         }
-
+        /// <summary>
+        /// Генерирует скрипты создания проверок и пишет их в <code>output</code>
+        /// </summary>
+        /// <param name="output">Дескриптор файла, в который записываются хранимые процедуры</param>
+        /// <param name="server">Сервер, на котором хранится база данных</param>
+        /// <param name="database">Контролируемая база данных</param>
         private static void GenerateCheckScripts(XmlWriter output, Database database)
         {
             // Создали открывающийся тег
@@ -298,7 +336,12 @@ namespace migration
             }
             output.WriteEndElement();
         }
-
+        /// <summary>
+        /// Генерирует скрипты создания внешних ключей и пишет их в <code>output</code>
+        /// </summary>
+        /// <param name="output">Дескриптор файла, в который записываются хранимые процедуры</param>
+        /// <param name="server">Сервер, на котором хранится база данных</param>
+        /// <param name="database">Контролируемая база данных</param>
         private static void GenerateForeignKeyScripts(XmlWriter output, Database database)
         {
             // Создали открывающийся тег
@@ -329,7 +372,12 @@ namespace migration
             }
             output.WriteEndElement();
         }
-
+        /// <summary>
+        /// Генерирует скрипты создания индексов и пишет их в <code>output</code>
+        /// </summary>
+        /// <param name="output">Дескриптор файла, в который записываются хранимые процедуры</param>
+        /// <param name="server">Сервер, на котором хранится база данных</param>
+        /// <param name="database">Контролируемая база данных</param>
         private static void GenerateIndexScripts(XmlWriter output, Database database)
         {
             // Создали открывающийся тег
