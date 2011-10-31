@@ -33,7 +33,7 @@ namespace migration
                 // FileName - имя файла, куда будет сохранен XML-документ
                 // settings - настройки форматирования (и не только) вывода
                 // (рассмотрен выше)
-                using (XmlWriter output = XmlWriter.Create("init.xml", settings))
+                using (XmlWriter output = XmlWriter.Create(DateTime.Today.ToString("dd.MM.YY")+"_" + DateTime.Now.ToString("HH.mm.ss") + ".xml", settings))
                 {
                     Server server = new Server(Config.serverName);
                     Database database = server.Databases[Config.databaseName];
@@ -90,7 +90,16 @@ namespace migration
                 command.ExecuteNonQuery();
                 command.CommandText = Init.LoadFileToStringCollection("migration/CreateTables.sql");
                 command.ExecuteNonQuery();
+                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(".");
+                command.CommandText = "CREATE ASSEMBLY CLRFunctions FROM '" + di.FullName + "\\SqlCLR.dll'";
+                command.ExecuteNonQuery();
+                command.CommandText = Init.LoadFileToStringCollection("migration/CreateCLRFunction.sql");
+                command.ExecuteNonQuery();
                 command.CommandText = Init.LoadFileToStringCollection("migration/CreateDDLTriggers.sql");
+                command.ExecuteNonQuery();
+                command.CommandText = "sp_configure 'clr enabled', 1";
+                command.ExecuteNonQuery();
+                command.CommandText = "reconfigure";
                 command.ExecuteNonQuery();
                 connection.Close();
             }

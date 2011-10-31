@@ -20,14 +20,14 @@ namespace migration
                         case "--init":
                             Init.Run();
                             break;
+                        case "--migration-first":
+                            ToFirst.Run();
+                            break;
                         case "--state-fix":
-                            Program.StateFix();
+                            StateFix.Run();
                             break;
-                        case "--migration-up":
-                            migration.Program.MigrationUp();
-                            break;
-                        case "--migration-down":
-                            migration.Program.MigrationDown();
+                        case "--migration-to":
+                            UpDown.Run(args[1]);
                             break;
                         case "--help":
                             migration.Program.PrintHelp();
@@ -59,18 +59,6 @@ namespace migration
             Console.WriteLine("  --migration-up\tMigrate to next version of database");
             Console.WriteLine("  --migration-down\tMigrate to previous version of database");
             Console.ReadKey(true);
-        }
-        private static void MigrationDown()
-        {
-            throw new NotImplementedException();
-        }
-        private static void MigrationUp()
-        {
-            throw new NotImplementedException();
-        }
-        private static void StateFix()
-        {
-            throw new NotImplementedException();
         }
     }
 }
