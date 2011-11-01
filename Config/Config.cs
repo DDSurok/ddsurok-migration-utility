@@ -5,11 +5,12 @@ namespace migration
 {
     static public class Config
     {
+        static private string FileName = "conf\\migration.conf";
         static public void Load()
         {
             try
             {
-                using (XmlReader reader = XmlReader.Create("migration.conf"))
+                using (XmlReader reader = XmlReader.Create(Config.FileName))
                 {
                     while (reader.Read())
                     {
@@ -85,7 +86,7 @@ namespace migration
             // FileName - имя файла, куда будет сохранен XML-документ
             // settings - настройки форматирования (и не только) вывода
             // (рассмотрен выше)
-            using (XmlWriter output = XmlWriter.Create("migration.conf", settings))
+            using (XmlWriter output = XmlWriter.Create(Config.FileName, settings))
             {
                 // Создали открывающийся тег
                 output.WriteStartElement("MigrationConfigure");

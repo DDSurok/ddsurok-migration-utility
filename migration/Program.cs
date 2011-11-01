@@ -58,7 +58,7 @@ namespace migration
             Console.WriteLine("Please use the - HELP for help with the work program");
             Console.ReadKey(true);
         }
-        private static void PrintHelp()
+        private static void PrintHelp()    // TODO
         {
             Console.WriteLine("Migration utility v. " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
             Console.WriteLine("Use the utility as follows:\tMIGRATION.EXE [OPTIONS]");

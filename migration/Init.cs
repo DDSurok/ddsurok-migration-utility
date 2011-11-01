@@ -36,7 +36,7 @@ namespace migration
                 // FileName - имя файла, куда будет сохранен XML-документ
                 // settings - настройки форматирования (и не только) вывода
                 // (рассмотрен выше)
-                using (XmlWriter output = XmlWriter.Create("versions.xml", settings))
+                using (XmlWriter output = XmlWriter.Create(@"conf\versions.xml", settings))
                 {
                     Server server = new Server(Config.serverName);
                     Database database = server.Databases[Config.databaseName];
@@ -67,16 +67,25 @@ namespace migration
                     // Сохранение информации о хранимых процедурах
                     Init.GenerateStoredProcScripts(output, server, database);
 
-                    output.WriteEndElement();
-                    output.WriteEndDocument();
+                    WriteXMLSuffix(output);
 
-                    Process hg = Process.Start("hg", "init");
+                    ProcessStartInfo info = new ProcessStartInfo();
+                    info.WorkingDirectory = Directory.GetCurrentDirectory() + @"\conf";
+                    info.FileName = "hg";
+                    info.Arguments = "init";
+                    Process hg = Process.Start(info);
                     hg.WaitForExit();
 
-                    hg = Process.Start("hg", "add versions.xml migration.conf");
+                    info.Arguments = "add";
+                    hg = Process.Start(info);
                     hg.WaitForExit();
 
-                    hg = Process.Start("hg", "commit");
+                    info.Arguments = "commit";
+                    hg = Process.Start(info);
+                    hg.WaitForExit();
+
+                    info.Arguments = "push " + Config.remoteRepository;
+                    hg = Process.Start(info);
                     hg.WaitForExit();
                 }
             }
@@ -103,7 +112,7 @@ namespace migration
                 command.CommandText = Init.LoadFileToStringCollection("migration/CreateTables.sql");
                 command.ExecuteNonQuery();
                 System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(".");
-                command.CommandText = "CREATE ASSEMBLY CLRFunctions FROM '" + di.FullName + "\\SqlCLR.dll'";
+                command.CommandText = "CREATE ASSEMBLY CLRFunctions FROM '" + di.FullName + @"\SqlCLR.dll'";
                 command.ExecuteNonQuery();
                 command.CommandText = Init.LoadFileToStringCollection("migration/CreateCLRFunction.sql");
                 command.ExecuteNonQuery();
@@ -137,7 +146,7 @@ namespace migration
             return retStr;
         }
         /// <summary>
-        /// Записываем заголовок файла конфигурации
+        /// Записываем заголовок файла версий
         /// </summary>
         /// <param name="output">Дескриптор файла, в который нужно записать заголовок</param>
         private static void WriteXMLHeader(XmlWriter output)
@@ -153,6 +162,25 @@ namespace migration
             foreach (byte b in byteHash)  
                 hash += string.Format("{0:x2}", b);
             output.WriteAttributeString("Id", hash);
+            output.WriteStartElement("UpScripts");
+            output.WriteStartElement("IfExistsDatabase");
+            output.WriteString("\n");
+            output.WriteString("IF  EXISTS (SELECT name FROM sys.databases WHERE name = N'" + Config.databaseName + "')\n");
+            output.WriteString("DROP DATABASE " + Config.databaseName + "\n");
+            output.WriteString("GO");
+            output.WriteEndElement(); // "IfExistsDatabase"
+        }
+        /// <summary>
+        /// Записываем подвал файла версий
+        /// </summary>
+        /// <param name="output">Дескриптор файла, в который нужно записать подвал</param>
+        private static void WriteXMLSuffix(XmlWriter output)
+        {
+            output.WriteEndElement(); // "UpScripts"
+            output.WriteStartElement("DownScripts");
+            output.WriteEndElement(); // "DownScripts"
+            output.WriteEndElement(); // "Revision"
+            output.WriteEndDocument();
         }
         /// <summary>
         /// Генерирует скрипты создания хранимых процедур и пишет их в <code>output</code>

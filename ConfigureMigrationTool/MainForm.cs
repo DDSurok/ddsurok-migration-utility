@@ -96,16 +96,34 @@ namespace ConfigureMigrationTool
 
         private void btnExport_Click(object sender, EventArgs e)
         {
-            if ((this.ServerComboBox.SelectedIndex > -1) && (this.DatabaseComboBox.SelectedIndex > -1))
+            if (this.btnUpdateDatabaseList.Enabled)
             {
-                try
+                if ((this.ServerComboBox.SelectedIndex > -1) && (this.DatabaseComboBox.SelectedIndex > -1))
                 {
-                    this.ExportConfigure();
-                    MessageBox.Show("Файл конфигурации успешно создан");
+                    try
+                    {
+                        this.ExportConfigure();
+                        MessageBox.Show("Файл конфигурации успешно создан");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.ToString());
+                    }
                 }
-                catch (Exception ex)
+            }
+            else
+            {
+                if (this.ServerComboBox.SelectedIndex > -1)
                 {
-                    MessageBox.Show(ex.ToString());
+                    try
+                    {
+                        this.ExportConfigure();
+                        MessageBox.Show("Файл конфигурации успешно создан");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.ToString());
+                    }
                 }
             }
         }
