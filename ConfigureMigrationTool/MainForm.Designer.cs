@@ -35,6 +35,9 @@
             this.btnUpdateDatabaseList = new System.Windows.Forms.Button();
             this.DatabaseComboBox = new System.Windows.Forms.ComboBox();
             this.btnExport = new System.Windows.Forms.Button();
+            this.Repository = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.btnReset = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ServerComboBox
@@ -95,19 +98,48 @@
             // 
             // btnExport
             // 
-            this.btnExport.Location = new System.Drawing.Point(438, 71);
+            this.btnExport.Location = new System.Drawing.Point(487, 96);
             this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(151, 23);
+            this.btnExport.Size = new System.Drawing.Size(102, 23);
             this.btnExport.TabIndex = 6;
             this.btnExport.Text = "Export configure";
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
+            // Repository
+            // 
+            this.Repository.Location = new System.Drawing.Point(80, 70);
+            this.Repository.Name = "Repository";
+            this.Repository.Size = new System.Drawing.Size(509, 20);
+            this.Repository.TabIndex = 7;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 73);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(52, 26);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "Remote\r\nrepository";
+            // 
+            // btnReset
+            // 
+            this.btnReset.Location = new System.Drawing.Point(382, 96);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(99, 23);
+            this.btnReset.TabIndex = 9;
+            this.btnReset.Text = "Reset configure";
+            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(601, 291);
+            this.ClientSize = new System.Drawing.Size(601, 129);
+            this.Controls.Add(this.btnReset);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.Repository);
             this.Controls.Add(this.btnExport);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btnUpdateDatabaseList);
@@ -131,6 +163,9 @@
         private System.Windows.Forms.Button btnUpdateDatabaseList;
         private System.Windows.Forms.ComboBox DatabaseComboBox;
         private System.Windows.Forms.Button btnExport;
+        private System.Windows.Forms.TextBox Repository;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btnReset;
     }
 }
 

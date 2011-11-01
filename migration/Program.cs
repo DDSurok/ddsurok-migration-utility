@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace migration
 {
@@ -26,6 +27,9 @@ namespace migration
                         case "--state-fix":
                             StateFix.Run();
                             break;
+                        case "--list":
+                            migration.Program.PrintListChanges();
+                            break;
                         case "--migration-to":
                             UpDown.Run(args[1]);
                             break;
@@ -43,6 +47,11 @@ namespace migration
                 Console.WriteLine(ex.Message);
             }
             
+        }
+
+        private static void PrintListChanges()
+        {
+            Process hg = Process.Start("hg", "init");
         }
         private static void PrintWrongMessage()
         {

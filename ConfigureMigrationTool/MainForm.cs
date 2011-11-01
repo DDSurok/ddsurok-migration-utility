@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Microsoft.SqlServer.Management.Smo;
 using System.Xml;
 using System;
+using migration;
 
 namespace ConfigureMigrationTool
 {
@@ -17,7 +18,21 @@ namespace ConfigureMigrationTool
         {
             InitializeComponent();
             this.ReloadServerList();
-            this.ReloadDatabaseList();
+            Config.Load();
+            if (Config.isLoad)
+            {
+                // Запись информации о базе данных
+                // Имя базы данных неизменно для проекта
+                this.DatabaseComboBox.Text = Config.databaseName;
+                this.DatabaseComboBox.Enabled = false;
+                this.btnUpdateDatabaseList.Enabled = false;
+
+                // Заполнение информации о имени сервера и репозитории
+                this.ServerComboBox.SelectedIndex = this.ServerComboBox.FindString(Config.serverName);
+                this.Repository.Text = Config.remoteRepository;
+            }
+            else
+                this.ReloadDatabaseList();
         }
         /// <summary>
         /// Обновление списка доступных серверов MS SQL Server, запущенных на локальном компьютере
@@ -57,40 +72,16 @@ namespace ConfigureMigrationTool
         /// </summary>
         private void ExportConfigure()
         {
-            XmlWriterSettings settings = new XmlWriterSettings();
-
-            // включаем отступ для элементов XML документа
-            // (позволяет наглядно изобразить иерархию XML документа)
-            settings.Indent = true;
-            settings.IndentChars = "  "; // задаем отступ, здесь у меня 2 пробела
-
-            // задаем переход на новую строку
-            settings.NewLineChars = "\n";
-
-            // Нужно ли опустить строку декларации формата XML документа
-            // речь идет о строке вида "<?xml version="1.0" encoding="utf-8"?>"
-            settings.OmitXmlDeclaration = false;
-            
-            // FileName - имя файла, куда будет сохранен XML-документ
-            // settings - настройки форматирования (и не только) вывода
-            // (рассмотрен выше)
-            using (XmlWriter output = XmlWriter.Create("migration.conf", settings))
+            if (!this.btnUpdateDatabaseList.Enabled)
             {
-                // Создали открывающийся тег
-                output.WriteStartElement("MigrationConfigure");
-                
-                // Создаем элемент connectionString
-                output.WriteElementString("serverName", this.ServerComboBox.SelectedItem.ToString());
-
-                // Создаем элемент databaseName
-                output.WriteElementString("databaseName", this.DatabaseComboBox.SelectedItem.ToString());
- 
-                // Сбрасываем буфферизированные данные
-                output.Flush();
- 
-                // Закрываем фаил, с которым связан output
-                output.Close();
-}
+                // Файл конфигурации существовал
+                Config.Write(this.ServerComboBox.SelectedItem.ToString(), this.Repository.Text);
+            }
+            else
+            {
+                // Файл конфигурации не существовал
+                Config.Rewrite(this.ServerComboBox.SelectedItem.ToString(), this.DatabaseComboBox.SelectedItem.ToString(), this.Repository.Text);
+            }
         }
         
         private void btnUpdateServerList_Click(object sender, System.EventArgs e)
@@ -117,6 +108,14 @@ namespace ConfigureMigrationTool
                     MessageBox.Show(ex.ToString());
                 }
             }
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            this.DatabaseComboBox.Text = "";
+            this.DatabaseComboBox.Enabled = true;
+            this.btnUpdateDatabaseList.Enabled = true;
+            this.ReloadDatabaseList();
         }
     }
 }

@@ -5,7 +5,6 @@ BEGIN TRAN;
 	IF EXISTS (SELECT sys.schemas.name FROM sys.schemas where sys.schemas.name = N'dds')
 	BEGIN
 		IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'dds.RollBackScriptCLR') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT')) DROP FUNCTION [dds].[RollBackScriptCLR]
-		IF EXISTS (SELECT * FROM sys.assemblies asms WHERE asms.name = N'CLRFunctions' and is_user_defined = 1) DROP ASSEMBLY [CLRFunctions]
 		DECLARE @table_name sysname;
 		DECLARE myCursor CURSOR FOR SELECT sys.tables.name FROM sys.tables, sys.schemas where sys.tables.schema_id = sys.schemas.schema_id and sys.schemas.name = N'dds';
 		OPEN myCursor;
@@ -19,6 +18,7 @@ BEGIN TRAN;
 		CLOSE myCursor;
 		DEALLOCATE myCursor;
 		DROP SCHEMA [dds];
+		IF EXISTS (SELECT * FROM sys.assemblies asms WHERE asms.name = N'CLRFunctions' and is_user_defined = 1) DROP ASSEMBLY [CLRFunctions]
 		IF @@ERROR!=0
 		BEGIN
 			SELECT * FROM sys.all_parameters;

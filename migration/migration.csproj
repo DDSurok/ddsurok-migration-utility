@@ -8,7 +8,7 @@
     <ProjectGuid>{07976E55-3DA2-4B33-8A4E-BABD14C04C45}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>migration</RootNamespace>
+    <RootNamespace>Config</RootNamespace>
     <AssemblyName>migration</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
@@ -60,7 +60,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config.cs" />
     <Compile Include="Init.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -77,6 +76,12 @@
     <Content Include="CreateDDLTriggers.sql" />
     <Content Include="IfExists.sql" />
     <Content Include="CreateSchema.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Config\Config.csproj">
+      <Project>{A0CBA486-0C46-427F-811A-4D487D0ACE95}</Project>
+      <Name>Config</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

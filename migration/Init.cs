@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Specialized;
 using System.Data.SqlClient;
 using System.IO;
 using System.Xml;
 using Microsoft.SqlServer.Management.Smo;
+using System.Diagnostics;
+using System.Security.Cryptography;
 
 namespace migration
 {
@@ -33,7 +36,7 @@ namespace migration
                 // FileName - имя файла, куда будет сохранен XML-документ
                 // settings - настройки форматирования (и не только) вывода
                 // (рассмотрен выше)
-                using (XmlWriter output = XmlWriter.Create(DateTime.Today.ToString("dd.MM.YY")+"_" + DateTime.Now.ToString("HH.mm.ss") + ".xml", settings))
+                using (XmlWriter output = XmlWriter.Create("versions.xml", settings))
                 {
                     Server server = new Server(Config.serverName);
                     Database database = server.Databases[Config.databaseName];
@@ -66,6 +69,15 @@ namespace migration
 
                     output.WriteEndElement();
                     output.WriteEndDocument();
+
+                    Process hg = Process.Start("hg", "init");
+                    hg.WaitForExit();
+
+                    hg = Process.Start("hg", "add versions.xml migration.conf");
+                    hg.WaitForExit();
+
+                    hg = Process.Start("hg", "commit");
+                    hg.WaitForExit();
                 }
             }
             catch (Exception ex)
@@ -131,11 +143,16 @@ namespace migration
         private static void WriteXMLHeader(XmlWriter output)
         {
             output.WriteStartDocument();
-            output.WriteStartElement("Configuration");
+            output.WriteStartElement("Revision");
             output.WriteAttributeString("Database", Config.databaseName);
             output.WriteAttributeString("Create_date", DateTime.Today.ToShortDateString());
             output.WriteAttributeString("Create_time", DateTime.Now.ToShortTimeString());
-            output.WriteAttributeString("Version", 1.ToString("0000"));
+            SHA1 sha = new SHA1CryptoServiceProvider();
+            byte[] byteHash = sha.ComputeHash(Encoding.Unicode.GetBytes(DateTime.Today.ToShortDateString()+" "+DateTime.Now.ToShortTimeString()));
+            string hash = "";
+            foreach (byte b in byteHash)  
+                hash += string.Format("{0:x2}", b);
+            output.WriteAttributeString("Id", hash);
         }
         /// <summary>
         /// Генерирует скрипты создания хранимых процедур и пишет их в <code>output</code>
