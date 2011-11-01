@@ -63,19 +63,16 @@
     <Compile Include="Init.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StateFix.cs" />
+    <Compile Include="Commit.cs" />
     <Compile Include="ToFirst.cs" />
     <Compile Include="UpDown.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="CreateCLRFunction.sql" />
-    <Content Include="CreateTables.sql" />
-    <Content Include="CreateDDLTriggers.sql" />
-    <Content Include="IfExists.sql" />
-    <Content Include="CreateSchema.sql" />
+    <Content Include="SQL\CreateCLRFunction.sql" />
+    <Content Include="SQL\CreateTables.sql" />
+    <Content Include="SQL\CreateDDLTriggers.sql" />
+    <Content Include="SQL\IfExists.sql" />
+    <Content Include="SQL\CreateSchema.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Config\Config.csproj">

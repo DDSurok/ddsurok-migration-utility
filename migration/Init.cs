@@ -36,10 +36,11 @@ namespace migration
                 // FileName - имя файла, куда будет сохранен XML-документ
                 // settings - настройки форматирования (и не только) вывода
                 // (рассмотрен выше)
-                using (XmlWriter output = XmlWriter.Create(@"conf\versions.xml", settings))
+                using (XmlWriter output = XmlWriter.Create(Program.fileName, settings))
                 {
                     Server server = new Server(Config.serverName);
                     Database database = server.Databases[Config.databaseName];
+                    
                     // Пишем информацию в XML о типе записи
                     Init.WriteXMLHeader(output);
 
@@ -67,26 +68,10 @@ namespace migration
                     // Сохранение информации о хранимых процедурах
                     Init.GenerateStoredProcScripts(output, server, database);
 
-                    WriteXMLSuffix(output);
+                    // Пишем подвал XML-документа
+                    Init.WriteXMLSuffix(output);
 
-                    ProcessStartInfo info = new ProcessStartInfo();
-                    info.WorkingDirectory = Directory.GetCurrentDirectory() + @"\conf";
-                    info.FileName = "hg";
-                    info.Arguments = "init";
-                    Process hg = Process.Start(info);
-                    hg.WaitForExit();
-
-                    info.Arguments = "add";
-                    hg = Process.Start(info);
-                    hg.WaitForExit();
-
-                    info.Arguments = "commit";
-                    hg = Process.Start(info);
-                    hg.WaitForExit();
-
-                    info.Arguments = "push " + Config.remoteRepository;
-                    hg = Process.Start(info);
-                    hg.WaitForExit();
+                    Init.HgInit();
                 }
             }
             catch (Exception ex)
@@ -94,6 +79,37 @@ namespace migration
                 Console.WriteLine(ex.ToString());
                 Console.ReadKey(true);
             }
+        }
+        /// <summary>
+        /// Работа с Mercurial (локальный и удаленный репозиторий)
+        /// </summary>
+        private static void HgInit()
+        {
+            DirectoryInfo dirInfo = new DirectoryInfo(@"conf\.hg");
+
+            ProcessStartInfo info = new ProcessStartInfo();
+            info.WorkingDirectory = Directory.GetCurrentDirectory() + @"\conf";
+            info.FileName = "hg";
+
+            if (!dirInfo.Exists)
+                info.Arguments = "init";        // Создадим новый репозиторий
+            else
+                info.Arguments = "remove *";    // Очистим существующий
+
+            Process hg = Process.Start(info);
+            hg.WaitForExit();
+
+            info.Arguments = "add";             // Добавим необходимые файлы в репозиторий
+            hg = Process.Start(info);
+            hg.WaitForExit();
+
+            info.Arguments = "commit";          // Фиксируем новые изменения
+            hg = Process.Start(info);
+            hg.WaitForExit();
+
+            info.Arguments = "push " + Config.remoteRepository;
+            hg = Process.Start(info);           // Проталкиваем изменения в удаленный репозиторий
+            hg.WaitForExit();
         }
         /// <summary>
         /// Заполняем базу таблицами необходимыми для работы таблицами и триггерами
@@ -105,18 +121,18 @@ namespace migration
                 connection.Open();
                 connection.ChangeDatabase(Config.databaseName);
                 SqlCommand command = connection.CreateCommand();
-                command.CommandText = Init.LoadFileToStringCollection("migration/IfExists.sql");
+                command.CommandText = Init.LoadFileToStringCollection("migration/SQL/IfExists.sql");
                 command.ExecuteNonQuery();
-                command.CommandText = Init.LoadFileToStringCollection("migration/CreateSchema.sql");
+                command.CommandText = Init.LoadFileToStringCollection("migration/SQL/CreateSchema.sql");
                 command.ExecuteNonQuery();
-                command.CommandText = Init.LoadFileToStringCollection("migration/CreateTables.sql");
+                command.CommandText = Init.LoadFileToStringCollection("migration/SQL/CreateTables.sql");
                 command.ExecuteNonQuery();
                 System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(".");
                 command.CommandText = "CREATE ASSEMBLY CLRFunctions FROM '" + di.FullName + @"\SqlCLR.dll'";
                 command.ExecuteNonQuery();
-                command.CommandText = Init.LoadFileToStringCollection("migration/CreateCLRFunction.sql");
+                command.CommandText = Init.LoadFileToStringCollection("migration/SQL/CreateCLRFunction.sql");
                 command.ExecuteNonQuery();
-                command.CommandText = Init.LoadFileToStringCollection("migration/CreateDDLTriggers.sql");
+                command.CommandText = Init.LoadFileToStringCollection("migration/SQL/CreateDDLTriggers.sql");
                 command.ExecuteNonQuery();
                 command.CommandText = "sp_configure 'clr enabled', 1";
                 command.ExecuteNonQuery();

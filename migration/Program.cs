@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Xml;
 
 namespace migration
 {
     class Program
     {
+        static public string fileName = @"conf\versions.xml";
         static void Main(string[] args)
         {
             try
@@ -25,7 +28,13 @@ namespace migration
                             ToFirst.Run();
                             break;
                         case "--state-fix":
-                            StateFix.Run();
+                            Commit.Run();
+                            break;
+                        case "--pop":
+                            migration.Program.Pop();
+                            break;
+                        case "--push":
+                            migration.Program.Push();
                             break;
                         case "--list":
                             migration.Program.PrintListChanges();
@@ -48,16 +57,52 @@ namespace migration
             }
             
         }
+        /// <summary>
+        /// Протолкнуть все изменения в удаленный репозиторий
+        /// </summary>
+        private static void Push()
+        {
+            ProcessStartInfo info = new ProcessStartInfo();
+            info.WorkingDirectory = Directory.GetCurrentDirectory() + @"\conf";
+            info.FileName = "hg";
 
+            info.Arguments = "push " + Config.remoteRepository;    // Отправим в удаленный репозиторий
+
+            Process hg = Process.Start(info);
+            hg.WaitForExit();
+        }
+        /// <summary>
+        /// Получить все изменения из удаленного репозитория
+        /// </summary>
+        private static void Pop()
+        {
+            ProcessStartInfo info = new ProcessStartInfo();
+            info.WorkingDirectory = Directory.GetCurrentDirectory() + @"\conf";
+            info.FileName = "hg";
+
+            info.Arguments = "pop " + Config.remoteRepository;    // Получим из удаленного репозитория
+
+            Process hg = Process.Start(info);
+            hg.WaitForExit();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
         private static void PrintListChanges()
         {
-            Process hg = Process.Start("hg", "init");
+            using (XmlDocument doc = XmlDocument.
         }
+        /// <summary>
+        /// 
+        /// </summary>
         private static void PrintWrongMessage()
         {
             Console.WriteLine("Please use the - HELP for help with the work program");
             Console.ReadKey(true);
         }
+        /// <summary>
+        /// 
+        /// </summary>
         private static void PrintHelp()    // TODO
         {
             Console.WriteLine("Migration utility v. " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());

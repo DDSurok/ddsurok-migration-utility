@@ -5,7 +5,7 @@ namespace migration
 {
     static public class Config
     {
-        static private string FileName = "conf\\migration.conf";
+        static private string FileName = @"conf\migration.conf";
         static public void Load()
         {
             try
