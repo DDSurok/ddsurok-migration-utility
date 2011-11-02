@@ -19,19 +19,7 @@ namespace migration
         {
             try
             {
-                XmlWriterSettings settings = new XmlWriterSettings();
-
-                // включаем отступ для элементов XML документа
-                // (позволяет наглядно изобразить иерархию XML документа)
-                settings.Indent = true;
-                settings.IndentChars = "  "; // задаем отступ, здесь у меня 2 пробела
-
-                // задаем переход на новую строку
-                settings.NewLineChars = "\n";
-
-                // Нужно ли опустить строку декларации формата XML документа
-                // речь идет о строке вида "<?xml version="1.0" encoding="utf-8"?>"
-                settings.OmitXmlDeclaration = false;
+                XmlWriterSettings settings = Config.XmlSettings();
 
                 // FileName - имя файла, куда будет сохранен XML-документ
                 // settings - настройки форматирования (и не только) вывода
@@ -91,11 +79,12 @@ namespace migration
             info.WorkingDirectory = Directory.GetCurrentDirectory() + @"\conf";
             info.FileName = "hg";
 
-            if (!dirInfo.Exists)
-                info.Arguments = "init";        // Создадим новый репозиторий
-            else
-                info.Arguments = "remove *";    // Очистим существующий
-
+            if (dirInfo.Exists)
+            {
+                Directory.Delete(@"conf\.hg", true);
+            }
+            info.Arguments = "init";        // Создадим новый репозиторий
+            
             Process hg = Process.Start(info);
             hg.WaitForExit();
 
@@ -107,9 +96,14 @@ namespace migration
             hg = Process.Start(info);
             hg.WaitForExit();
 
-            info.Arguments = "push " + Config.remoteRepository;
-            hg = Process.Start(info);           // Проталкиваем изменения в удаленный репозиторий
-            hg.WaitForExit();
+            //if (Config.remoteRepository.Trim() == "")
+            //    return;                         // Удаленного репозитория нет - ничего не проталкиваем
+            //else
+            //{
+            //    info.Arguments = "push " + Config.remoteRepository;
+            //    hg = Process.Start(info);           // Проталкиваем изменения в удаленный репозиторий
+            //    hg.WaitForExit();
+            //}
         }
         /// <summary>
         /// Заполняем базу таблицами необходимыми для работы таблицами и триггерами
@@ -221,6 +215,7 @@ namespace migration
                     scriptor.Options.Indexes = true;
                     scriptor.Options.DriAll = true;
                     scriptor.Options.Default = true;
+                    scriptor.Options.IncludeIfNotExists = true;
                     scriptor.Options.WithDependencies = true;
                     scriptor.Options.ScriptSchema = true;
                     strCollection = scriptor.Script(smoObj);
@@ -255,6 +250,7 @@ namespace migration
                 smoObj[0] = role;
                 Scripter scriptor = new Scripter(server);
                 scriptor.Options.AllowSystemObjects = false;
+                scriptor.Options.IncludeIfNotExists = true;
                 strCollection = scriptor.Script(smoObj);
                 output.WriteStartElement("script");
                 output.WriteString("\n");
@@ -287,6 +283,7 @@ namespace migration
                 scriptor.Options.Indexes = true;
                 scriptor.Options.DriAll = true;
                 scriptor.Options.Default = true;
+                scriptor.Options.IncludeIfNotExists = true;
                 scriptor.Options.WithDependencies = true;
                 scriptor.Options.ScriptSchema = true;
                 strCollection = scriptor.Script(smoObj);
@@ -320,8 +317,9 @@ namespace migration
                 scriptor.Options.AllowSystemObjects = false;
                 //scriptor.Options.Indexes = true;
                 //scriptor.Options.DriAll = true;
+                scriptor.Options.IncludeIfNotExists = true;
                 scriptor.Options.Default = true;
-                //scriptor.Options.WithDependencies = true;
+                scriptor.Options.WithDependencies = true;
                 scriptor.Options.ScriptSchema = true;
                 strCollection = scriptor.Script(smoObj);
                 output.WriteStartElement("script");
@@ -356,6 +354,7 @@ namespace migration
                     scriptor.Options.AllowSystemObjects = false;
                     scriptor.Options.DriAll = true;
                     scriptor.Options.Default = true;
+                    scriptor.Options.IncludeIfNotExists = true;
                     scriptor.Options.WithDependencies = false;
                     scriptor.Options.ScriptSchema = true;
                     strCollection = scriptor.Script(smoObj);
@@ -389,6 +388,7 @@ namespace migration
                     SqlSmoObject[] smoObj = new SqlSmoObject[1];
                     smoObj[0] = check;
                     Scripter scriptor = new Scripter(database.Parent);
+                    scriptor.Options.IncludeIfNotExists = true;
                     scriptor.Options.AllowSystemObjects = false;
                     scriptor.Options.DriAll = true;
                     scriptor.Options.Default = true;
@@ -425,6 +425,7 @@ namespace migration
                     SqlSmoObject[] smoObj = new SqlSmoObject[1];
                     smoObj[0] = fk;
                     Scripter scriptor = new Scripter(database.Parent);
+                    scriptor.Options.IncludeIfNotExists = true;
                     scriptor.Options.AllowSystemObjects = false;
                     scriptor.Options.DriAll = true;
                     scriptor.Options.Default = true;
@@ -461,6 +462,7 @@ namespace migration
                     SqlSmoObject[] smoObj = new SqlSmoObject[1];
                     smoObj[0] = index;
                     Scripter scriptor = new Scripter(database.Parent);
+                    scriptor.Options.IncludeIfNotExists = true;
                     scriptor.Options.AllowSystemObjects = false;
                     scriptor.Options.DriAll = true;
                     scriptor.Options.Default = true;

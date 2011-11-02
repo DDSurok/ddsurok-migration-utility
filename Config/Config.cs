@@ -5,6 +5,23 @@ namespace migration
 {
     static public class Config
     {
+        static public XmlWriterSettings XmlSettings()
+        {
+            XmlWriterSettings settings = new XmlWriterSettings();
+
+            // включаем отступ для элементов XML документа
+            // (позволяет наглядно изобразить иерархию XML документа)
+            settings.Indent = true;
+            settings.IndentChars = "  "; // задаем отступ, здесь у меня 2 пробела
+
+            // задаем переход на новую строку
+            settings.NewLineChars = "\n";
+
+            // Нужно ли опустить строку декларации формата XML документа
+            // речь идет о строке вида "<?xml version="1.0" encoding="utf-8"?>"
+            settings.OmitXmlDeclaration = true;
+            return settings;
+        }
         static private string FileName = @"conf\migration.conf";
         static public void Load()
         {

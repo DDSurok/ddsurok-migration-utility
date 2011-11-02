@@ -27,7 +27,7 @@ namespace migration
                         case "--migration-first":
                             ToFirst.Run();
                             break;
-                        case "--state-fix":
+                        case "--commit":
                             Commit.Run();
                             break;
                         case "--pop":
@@ -54,6 +54,7 @@ namespace migration
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.ReadKey(false);
             }
             
         }
@@ -90,7 +91,10 @@ namespace migration
         /// </summary>
         private static void PrintListChanges()
         {
-            using (XmlDocument doc = XmlDocument.
+            using (XmlReader input = XmlReader.Create(Program.fileName))
+            {
+                //input.
+            }
         }
         /// <summary>
         /// 
