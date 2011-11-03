@@ -5,7 +5,7 @@ using System.Text;
 
 namespace migration
 {
-    internal static class UpDown
+    public static class UpDown
     {
         public static void Run(string Version)
         {

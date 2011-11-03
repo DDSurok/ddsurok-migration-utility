@@ -8,8 +8,8 @@
     <ProjectGuid>{B6093BDA-C530-4B59-B7AF-977A5CCBB849}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ConfigureMigrationTool</RootNamespace>
-    <AssemblyName>ConfigureMigrationTool</AssemblyName>
+    <RootNamespace>migration</RootNamespace>
+    <AssemblyName>migration-GUI</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -97,6 +97,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -131,9 +132,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Config\Config.csproj">
+    <ProjectReference Include="..\Migration.dll\Migration.dll.csproj">
       <Project>{A0CBA486-0C46-427F-811A-4D487D0ACE95}</Project>
-      <Name>Config</Name>
+      <Name>Migration.dll</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

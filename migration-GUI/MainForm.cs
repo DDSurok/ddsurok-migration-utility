@@ -1,13 +1,10 @@
-﻿using System.Data;
+﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Data;
 using System.Windows.Forms;
 using Microsoft.SqlServer.Management.Smo;
-using System.Xml;
-using System;
-using migration;
 
-namespace ConfigureMigrationTool
+namespace migration
 {
     public partial class MainForm : Form
     {
@@ -18,18 +15,19 @@ namespace ConfigureMigrationTool
         {
             InitializeComponent();
             this.ReloadServerList();
-            Config.Load();
-            if (Config.isLoad)
+            ConfigFile.Load();
+            if (ConfigFile.isLoad)
             {
                 // Запись информации о базе данных
                 // Имя базы данных неизменно для проекта
-                this.DatabaseComboBox.Text = Config.databaseName;
+                this.DatabaseComboBox.Text = ConfigFile.databaseName;
                 this.DatabaseComboBox.Enabled = false;
                 this.btnUpdateDatabaseList.Enabled = false;
 
                 // Заполнение информации о имени сервера и репозитории
-                this.ServerComboBox.SelectedIndex = this.ServerComboBox.FindString(Config.serverName);
-                this.Repository.Text = Config.remoteRepository;
+                this.ServerComboBox.SelectedIndex = this.ServerComboBox.FindString(ConfigFile.serverName);
+                this.Directory.Text = ConfigFile.versionDirectory;
+                this.NickName.Text = ConfigFile.nickName;
             }
             else
                 this.ReloadDatabaseList();
@@ -75,12 +73,12 @@ namespace ConfigureMigrationTool
             if (!this.btnUpdateDatabaseList.Enabled)
             {
                 // Файл конфигурации существовал
-                Config.Write(this.ServerComboBox.SelectedItem.ToString(), this.Repository.Text);
+                ConfigFile.Write(this.ServerComboBox.SelectedItem.ToString(), this.Directory.Text, this.NickName.Text);
             }
             else
             {
                 // Файл конфигурации не существовал
-                Config.Rewrite(this.ServerComboBox.SelectedItem.ToString(), this.DatabaseComboBox.SelectedItem.ToString(), this.Repository.Text);
+                ConfigFile.Rewrite(this.ServerComboBox.SelectedItem.ToString(), this.DatabaseComboBox.SelectedItem.ToString(), this.Directory.Text, this.NickName.Text);
             }
         }
         

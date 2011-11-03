@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace ConfigureMigrationTool
+namespace migration
 {
     static class Program
     {

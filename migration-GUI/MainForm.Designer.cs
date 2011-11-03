@@ -1,4 +1,4 @@
-﻿namespace ConfigureMigrationTool
+﻿namespace migration
 {
     partial class MainForm
     {
@@ -35,18 +35,20 @@
             this.btnUpdateDatabaseList = new System.Windows.Forms.Button();
             this.DatabaseComboBox = new System.Windows.Forms.ComboBox();
             this.btnExport = new System.Windows.Forms.Button();
-            this.Repository = new System.Windows.Forms.TextBox();
+            this.Directory = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.btnReset = new System.Windows.Forms.Button();
+            this.NickName = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // ServerComboBox
             // 
             this.ServerComboBox.AllowDrop = true;
             this.ServerComboBox.FormattingEnabled = true;
-            this.ServerComboBox.Location = new System.Drawing.Point(80, 14);
+            this.ServerComboBox.Location = new System.Drawing.Point(108, 14);
             this.ServerComboBox.Name = "ServerComboBox";
-            this.ServerComboBox.Size = new System.Drawing.Size(428, 21);
+            this.ServerComboBox.Size = new System.Drawing.Size(400, 21);
             this.ServerComboBox.TabIndex = 0;
             // 
             // btnUpdateServerList
@@ -91,55 +93,73 @@
             // 
             this.DatabaseComboBox.AllowDrop = true;
             this.DatabaseComboBox.FormattingEnabled = true;
-            this.DatabaseComboBox.Location = new System.Drawing.Point(80, 43);
+            this.DatabaseComboBox.Location = new System.Drawing.Point(108, 43);
             this.DatabaseComboBox.Name = "DatabaseComboBox";
-            this.DatabaseComboBox.Size = new System.Drawing.Size(428, 21);
+            this.DatabaseComboBox.Size = new System.Drawing.Size(400, 21);
             this.DatabaseComboBox.TabIndex = 3;
             // 
             // btnExport
             // 
-            this.btnExport.Location = new System.Drawing.Point(487, 96);
+            this.btnExport.Location = new System.Drawing.Point(514, 96);
             this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(102, 23);
+            this.btnExport.Size = new System.Drawing.Size(75, 23);
             this.btnExport.TabIndex = 6;
-            this.btnExport.Text = "Export configure";
+            this.btnExport.Text = "Continue";
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
-            // Repository
+            // Directory
             // 
-            this.Repository.Location = new System.Drawing.Point(80, 70);
-            this.Repository.Name = "Repository";
-            this.Repository.Size = new System.Drawing.Size(509, 20);
-            this.Repository.TabIndex = 7;
+            this.Directory.Location = new System.Drawing.Point(108, 70);
+            this.Directory.Name = "Directory";
+            this.Directory.Size = new System.Drawing.Size(481, 20);
+            this.Directory.TabIndex = 7;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(12, 73);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(52, 26);
+            this.label3.Size = new System.Drawing.Size(91, 13);
             this.label3.TabIndex = 8;
-            this.label3.Text = "Remote\r\nrepository";
+            this.label3.Text = "Revision directory";
             // 
             // btnReset
             // 
-            this.btnReset.Location = new System.Drawing.Point(382, 96);
+            this.btnReset.Location = new System.Drawing.Point(405, 96);
             this.btnReset.Name = "btnReset";
-            this.btnReset.Size = new System.Drawing.Size(99, 23);
+            this.btnReset.Size = new System.Drawing.Size(103, 23);
             this.btnReset.TabIndex = 9;
             this.btnReset.Text = "Reset configure";
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
+            // NickName
+            // 
+            this.NickName.Location = new System.Drawing.Point(108, 99);
+            this.NickName.Name = "NickName";
+            this.NickName.Size = new System.Drawing.Size(291, 20);
+            this.NickName.TabIndex = 10;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 102);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(57, 13);
+            this.label4.TabIndex = 11;
+            this.label4.Text = "NickName";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(601, 129);
+            this.ClientSize = new System.Drawing.Size(601, 131);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.NickName);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.Repository);
+            this.Controls.Add(this.Directory);
             this.Controls.Add(this.btnExport);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btnUpdateDatabaseList);
@@ -163,9 +183,11 @@
         private System.Windows.Forms.Button btnUpdateDatabaseList;
         private System.Windows.Forms.ComboBox DatabaseComboBox;
         private System.Windows.Forms.Button btnExport;
-        private System.Windows.Forms.TextBox Repository;
+        private System.Windows.Forms.TextBox Directory;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnReset;
+        private System.Windows.Forms.TextBox NickName;
+        private System.Windows.Forms.Label label4;
     }
 }
 

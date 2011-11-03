@@ -10,18 +10,18 @@ using System.Diagnostics;
 
 namespace migration
 {
-    internal static class Commit
+    public static class Fix
     {
-        public static void Run()
+        public static void Run(string Comment)
         {
-            using (SqlConnection connection = new SqlConnection("Data Source=" + Config.serverName + ";Integrated Security=True"))
+            using (SqlConnection connection = new SqlConnection("Data Source=" + ConfigFile.serverName + ";Integrated Security=True"))
             {
                 // Проверяем базу на наличие изменений
                 connection.Open();
-                connection.ChangeDatabase(Config.databaseName);
+                connection.ChangeDatabase(ConfigFile.databaseName);
                 if (GetCountChanges(connection) > 0)    // Если изменения есть, то начинаем
                 {
-                    FileStream fs = new FileStream(Program.fileName, FileMode.Append);
+                    FileStream fs = new FileStream(Config.GetFileName(Comment), FileMode.Append);
                     XmlWriter output = XmlWriter.Create(fs, Config.XmlSettings());
                     // Дописываем в файл заголовок следующего коммита
                     WriteXMLHeader(output);
@@ -33,24 +33,9 @@ namespace migration
                     WriteXMLSuffix(output);
                     output.Close();
                     fs.Close();         // Закрываем поток
-
-                    Commit.HgCommit();
                 }
                 connection.Close();
             }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        private static void HgCommit()
-        {
-            ProcessStartInfo info = new ProcessStartInfo();
-            info.WorkingDirectory = Directory.GetCurrentDirectory() + @"\conf";
-            info.FileName = "hg";
-
-            info.Arguments = "commit";          // Фиксируем новые изменения
-            Process hg = Process.Start(info);
-            hg.WaitForExit();
         }
         /// <summary>
         /// Запись заголовка записи в XML
@@ -59,7 +44,7 @@ namespace migration
         private static void WriteXMLHeader(XmlWriter output)
         {
             output.WriteStartElement("Revision");
-            output.WriteAttributeString("Database", Config.databaseName);
+            output.WriteAttributeString("Database", ConfigFile.databaseName);
             output.WriteAttributeString("Create_date", DateTime.Today.ToShortDateString());
             output.WriteAttributeString("Create_time", DateTime.Now.ToShortTimeString());
             SHA1 sha = new SHA1CryptoServiceProvider();
