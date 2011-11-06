@@ -40,6 +40,8 @@
             this.btnReset = new System.Windows.Forms.Button();
             this.NickName = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.btnSelectDir = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ServerComboBox
@@ -112,7 +114,7 @@
             // 
             this.Directory.Location = new System.Drawing.Point(108, 70);
             this.Directory.Name = "Directory";
-            this.Directory.Size = new System.Drawing.Size(481, 20);
+            this.Directory.Size = new System.Drawing.Size(400, 20);
             this.Directory.TabIndex = 7;
             // 
             // label3
@@ -150,11 +152,22 @@
             this.label4.TabIndex = 11;
             this.label4.Text = "NickName";
             // 
+            // btnSelectDir
+            // 
+            this.btnSelectDir.Location = new System.Drawing.Point(514, 68);
+            this.btnSelectDir.Name = "btnSelectDir";
+            this.btnSelectDir.Size = new System.Drawing.Size(75, 23);
+            this.btnSelectDir.TabIndex = 12;
+            this.btnSelectDir.Text = ". . .";
+            this.btnSelectDir.UseVisualStyleBackColor = true;
+            this.btnSelectDir.Click += new System.EventHandler(this.btnSelectDir_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(601, 131);
+            this.Controls.Add(this.btnSelectDir);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.NickName);
             this.Controls.Add(this.btnReset);
@@ -188,6 +201,8 @@
         private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.TextBox NickName;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
+        private System.Windows.Forms.Button btnSelectDir;
     }
 }
 

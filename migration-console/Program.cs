@@ -24,7 +24,8 @@ namespace migration
                         case "--init":
                             if (args.Length > 1)
                             {
-                                Console.Write("If continue, full rewrite list of revisions");
+                                Console.Write("If continue, full rewrite list of revisions\n");
+                                Console.Write("Press 'y' from continue: ");
                                 char ch = Console.ReadKey(false).KeyChar;
                                 if ( ch == 'y')
                                     Init.Run(args[1]);

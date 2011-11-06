@@ -12,6 +12,7 @@ namespace migration
         static private XmlWriter output;
         static private Database database;
         static private Server server;
+        static private RevisionInfo currentRevision;
         /// <summary>
         /// Основной метод класса
         /// </summary>
@@ -25,6 +26,9 @@ namespace migration
                 Config.DeleteVersionDirectory();
                 using (Init.output = XmlWriter.Create(Config.GetFileName(Comment), Config.XmlSettings()))
                 {
+                    GenerateRevisionInfo(Comment);
+
+                    // Создание объектов для работы с БД
                     Init.server = new Server(ConfigFile.serverName);
                     Init.database = server.Databases[ConfigFile.databaseName];
                     
@@ -32,7 +36,7 @@ namespace migration
                     Init.WriteXMLHeader();
 
                     // Инициализируем базу данных на работу с нашей программой
-                    InitDatabase.Initial();
+                    InitDatabase.Initial(Init.currentRevision);
 
                     // Сохранение информации о таблицах
                     // Собственно схемы таблиц
@@ -63,6 +67,32 @@ namespace migration
             }
         }
         /// <summary>
+        /// Составление информации по ривизии
+        /// </summary>
+        /// <param name="Comment">Коментарий к ревизии</param>
+        private static void GenerateRevisionInfo(string Comment)
+        {
+            // Сбор информации по ревизии
+            Init.currentRevision.Id = -1;
+            Init.currentRevision.GenerateDateTime = new DateTime(DateTime.Today.Year,
+                                                                 DateTime.Today.Month,
+                                                                 DateTime.Today.Day,
+                                                                 DateTime.Now.Hour,
+                                                                 DateTime.Now.Minute,
+                                                                 DateTime.Now.Second);
+            Init.currentRevision.Author = ConfigFile.nickName;
+            Init.currentRevision.Comment = Comment;
+            SHA1 sha = new SHA1CryptoServiceProvider();
+            byte[] byteHash =
+                sha.ComputeHash(
+                    Encoding.Unicode.GetBytes(
+                        DateTime.Today.ToShortDateString()
+                        + " " + DateTime.Now.ToShortTimeString()));
+            Init.currentRevision.HashCode = "";
+            for (int i = 0; i < byteHash.Length; i++)
+                Init.currentRevision.HashCode += string.Format("{0:x2}", byteHash[i]);
+        }
+        /// <summary>
         /// Записываем заголовок файла версий
         /// </summary>
         private static void WriteXMLHeader()
@@ -70,14 +100,9 @@ namespace migration
             Init.output.WriteStartDocument();
             Init.output.WriteStartElement("Revision");
             Init.output.WriteAttributeString("Database", ConfigFile.databaseName);
-            Init.output.WriteAttributeString("Create_date", DateTime.Today.ToShortDateString());
-            Init.output.WriteAttributeString("Create_time", DateTime.Now.ToShortTimeString());
-            SHA1 sha = new SHA1CryptoServiceProvider();
-            byte[] byteHash = sha.ComputeHash(Encoding.Unicode.GetBytes(DateTime.Today.ToShortDateString()+" "+DateTime.Now.ToShortTimeString()));
-            string hash = "";
-            foreach (byte b in byteHash)  
-                hash += string.Format("{0:x2}", b);
-            Init.output.WriteAttributeString("Id", hash);
+            Init.output.WriteAttributeString("Create_date", Init.currentRevision.GenerateDateTime.ToShortDateString());
+            Init.output.WriteAttributeString("Create_time", Init.currentRevision.GenerateDateTime.ToShortTimeString());
+            Init.output.WriteAttributeString("Id", Init.currentRevision.HashCode);
             Init.output.WriteStartElement("UpScripts");
             Init.output.WriteStartElement("IfExistsDatabase");
             Init.output.WriteString("\n");

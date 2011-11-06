@@ -6,19 +6,20 @@ namespace migration
 {
     public static class RevisionList
     {
-        public static List<VersionInfo> Run()
+        public static List<RevisionInfo> Run()
         {
             throw new NotImplementedException();
         }
     }
-    public struct VersionInfo
+    public struct RevisionInfo
     {
         public DateTime GenerateDateTime { get; set; }
         public string Author { get; set; }
         public string Comment { get; set; }
         public int Id { get; set; }
+        public string HashCode { get; set; }
     }
-    internal struct VersionSimpleInfo
+    internal struct RevisionSimpleInfo
     {
         public string FileName { get; set; }
         public int Id { get; set; }

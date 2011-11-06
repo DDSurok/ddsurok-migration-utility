@@ -38,7 +38,7 @@ namespace migration
         private void ReloadServerList()
         {
             this._serversList.Clear();
-            foreach (DataRow row in SmoApplication.EnumAvailableSqlServers(false).Rows)
+            foreach (DataRow row in SmoApplication.EnumAvailableSqlServers(true).Rows)
             {
                 string sqlServerName = row["Server"].ToString();
                 if (row["Instance"] != null && row["Instance"].ToString().Length > 0)
@@ -132,6 +132,13 @@ namespace migration
             this.DatabaseComboBox.Enabled = true;
             this.btnUpdateDatabaseList.Enabled = true;
             this.ReloadDatabaseList();
+        }
+
+        private void btnSelectDir_Click(object sender, EventArgs e)
+        {
+            this.folderBrowserDialog.SelectedPath = this.Directory.Text;
+            this.folderBrowserDialog.ShowDialog();
+            this.Directory.Text = this.folderBrowserDialog.SelectedPath;
         }
     }
 }

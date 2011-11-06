@@ -12,6 +12,7 @@ namespace migration
 {
     public static class Fix
     {
+        private static RevisionInfo currentRevision;
         public static void Run(string Comment)
         {
             using (SqlConnection connection = new SqlConnection("Data Source=" + ConfigFile.serverName + ";Integrated Security=True"))
@@ -45,14 +46,35 @@ namespace migration
         {
             output.WriteStartElement("Revision");
             output.WriteAttributeString("Database", ConfigFile.databaseName);
-            output.WriteAttributeString("Create_date", DateTime.Today.ToShortDateString());
-            output.WriteAttributeString("Create_time", DateTime.Now.ToShortTimeString());
+            output.WriteAttributeString("Create_date", Fix.currentRevision.GenerateDateTime.ToShortDateString());
+            output.WriteAttributeString("Create_time", Fix.currentRevision.GenerateDateTime.ToShortTimeString());
+            output.WriteAttributeString("Id", Fix.currentRevision.HashCode);
+        }
+        /// <summary>
+        /// Составление информации по ривизии
+        /// </summary>
+        /// <param name="Comment">Коментарий к ревизии</param>
+        private static void GenerateRevisionInfo(string Comment)
+        {
+            // Сбор информации по ревизии
+            Fix.currentRevision.Id = -1;
+            Fix.currentRevision.GenerateDateTime = new DateTime(DateTime.Today.Year,
+                                                                 DateTime.Today.Month,
+                                                                 DateTime.Today.Day,
+                                                                 DateTime.Now.Hour,
+                                                                 DateTime.Now.Minute,
+                                                                 DateTime.Now.Second);
+            Fix.currentRevision.Author = ConfigFile.nickName;
+            Fix.currentRevision.Comment = Comment;
             SHA1 sha = new SHA1CryptoServiceProvider();
-            byte[] byteHash = sha.ComputeHash(Encoding.Unicode.GetBytes(DateTime.Today.ToShortDateString() + " " + DateTime.Now.ToShortTimeString()));
-            string hash = "";
-            foreach (byte b in byteHash)
-                hash += string.Format("{0:x2}", b);
-            output.WriteAttributeString("Id", hash);
+            byte[] byteHash =
+                sha.ComputeHash(
+                    Encoding.Unicode.GetBytes(
+                        DateTime.Today.ToShortDateString()
+                        + " " + DateTime.Now.ToShortTimeString()));
+            Fix.currentRevision.HashCode = "";
+            for (int i = 0; i < byteHash.Length; i++)
+                Fix.currentRevision.HashCode += string.Format("{0:x2}", byteHash[i]);
         }
         /// <summary>
         /// Запись подвала записи в XML
