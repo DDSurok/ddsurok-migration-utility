@@ -13,94 +13,85 @@ namespace migration
     public static class Fix
     {
         private static RevisionInfo currentRevision;
+        private static SqlConnection connection;
+        private static XmlWriter output;
         public static void Run(string Comment)
         {
-            using (SqlConnection connection = new SqlConnection("Data Source=" + ConfigFile.serverName + ";Integrated Security=True"))
+            using (connection = new SqlConnection("Data Source=" + ConfigFile.serverName + ";Integrated Security=True"))
             {
                 // Проверяем базу на наличие изменений
                 connection.Open();
                 connection.ChangeDatabase(ConfigFile.databaseName);
-                if (GetCountChanges(connection) > 0)    // Если изменения есть, то начинаем
+                if (GetCountChanges() > 0)    // Если изменения есть, то начинаем
                 {
-                    FileStream fs = new FileStream(Config.GetFileName(Comment), FileMode.Append);
-                    XmlWriter output = XmlWriter.Create(fs, Config.XmlSettings());
+                    Fix.currentRevision = RevisionInfo.GenerateRevisionInfo(Comment);
+                    FileStream fs = new FileStream(Config.GetFileName(Fix.currentRevision), FileMode.Append);
+                    output = XmlWriter.Create(fs, Config.XmlSettings());
                     // Дописываем в файл заголовок следующего коммита
-                    WriteXMLHeader(output);
+                    WriteXMLHeader();
                     // Пишем скрипты повышения
-                    WriteScriptsUp(connection, output);
+                    WriteScriptsUp();
                     // Пишем скрипты понижения
-                    WriteScriptsDown(connection, output);
+                    WriteScriptsDown();
+                    // Чистим список изменений и обновляем версию СУБД
+                    ClearUpDownScripts();
+                    InitDatabase.UpdateVersionDatabase(Fix.currentRevision);
                     // Пишем подвал коммита
-                    WriteXMLSuffix(output);
+                    WriteXMLSuffix();
                     output.Close();
                     fs.Close();         // Закрываем поток
                 }
                 connection.Close();
             }
         }
+
+        private static void ClearUpDownScripts()
+        {
+            SqlCommand command = Fix.connection.CreateCommand();
+            command.CommandText = "TRUNCATE TABLE [dds].[up]";
+            command.ExecuteNonQuery();
+            command.CommandText = "TRUNCATE TABLE [dds].[down];";
+            command.ExecuteNonQuery();
+            command.CommandText = "TRUNCATE TABLE [dds].[version];";
+            command.ExecuteNonQuery();
+        }
         /// <summary>
         /// Запись заголовка записи в XML
         /// </summary>
         /// <param name="output">XML, куда пишется запись</param>
-        private static void WriteXMLHeader(XmlWriter output)
+        private static void WriteXMLHeader()
         {
-            output.WriteStartElement("Revision");
-            output.WriteAttributeString("Database", ConfigFile.databaseName);
-            output.WriteAttributeString("Create_date", Fix.currentRevision.GenerateDateTime.ToShortDateString());
-            output.WriteAttributeString("Create_time", Fix.currentRevision.GenerateDateTime.ToShortTimeString());
-            output.WriteAttributeString("Id", Fix.currentRevision.HashCode);
-        }
-        /// <summary>
-        /// Составление информации по ривизии
-        /// </summary>
-        /// <param name="Comment">Коментарий к ревизии</param>
-        private static void GenerateRevisionInfo(string Comment)
-        {
-            // Сбор информации по ревизии
-            Fix.currentRevision.Id = -1;
-            Fix.currentRevision.GenerateDateTime = new DateTime(DateTime.Today.Year,
-                                                                 DateTime.Today.Month,
-                                                                 DateTime.Today.Day,
-                                                                 DateTime.Now.Hour,
-                                                                 DateTime.Now.Minute,
-                                                                 DateTime.Now.Second);
-            Fix.currentRevision.Author = ConfigFile.nickName;
-            Fix.currentRevision.Comment = Comment;
-            SHA1 sha = new SHA1CryptoServiceProvider();
-            byte[] byteHash =
-                sha.ComputeHash(
-                    Encoding.Unicode.GetBytes(
-                        DateTime.Today.ToShortDateString()
-                        + " " + DateTime.Now.ToShortTimeString()));
-            Fix.currentRevision.HashCode = "";
-            for (int i = 0; i < byteHash.Length; i++)
-                Fix.currentRevision.HashCode += string.Format("{0:x2}", byteHash[i]);
+            Fix.output.WriteStartElement("Revision");
+            Fix.output.WriteAttributeString("Database", ConfigFile.databaseName);
+            Fix.output.WriteAttributeString("Create_date", Fix.currentRevision.GenerateDateTime.ToShortDateString());
+            Fix.output.WriteAttributeString("Create_time", Fix.currentRevision.GenerateDateTime.ToShortTimeString());
+            Fix.output.WriteAttributeString("Id", Fix.currentRevision.HashCode);
         }
         /// <summary>
         /// Запись подвала записи в XML
         /// </summary>
         /// <param name="output"></param>
-        private static void WriteXMLSuffix(XmlWriter output)
+        private static void WriteXMLSuffix()
         {
-            output.WriteEndElement(); // "Revision"
-            output.WriteEndDocument();
+            Fix.output.WriteEndElement(); // "Revision"
+            Fix.output.WriteEndDocument();
         }
         /// <summary>
         /// Записываем в XML скрипты повышения
         /// </summary>
         /// <param name="connection">Соединение с базой, где храняться скрипты повышения (база должна быть выбрана)</param>
         /// <param name="output">XML, куда записываются скрипты</param>
-        private static void WriteScriptsUp(SqlConnection connection, XmlWriter output)
+        private static void WriteScriptsUp()
         {
-            output.WriteStartElement("UpScripts");
-            SqlCommand command = connection.CreateCommand();
-            command.CommandText = "SELECT [dds].[up].[id] AS [id], [dds].[up].[script] AS [script] FROM [dds].[up]";
+            Fix.output.WriteStartElement("UpScripts");
+            SqlCommand command = Fix.connection.CreateCommand();
+            command.CommandText = "SELECT [dds].[up].[id] AS [id], [dds].[up].[script] AS [script] FROM [dds].[up] ORDER BY [dds].[up].[id] ASC";
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                output.WriteElementString(int.Parse(reader["id"].ToString()).ToString("up00000000"), reader["script"].ToString());
+                Fix.output.WriteElementString(int.Parse(reader["id"].ToString()).ToString("up00000000"), reader["script"].ToString());
             }
-            output.WriteEndElement();
+            Fix.output.WriteEndElement();
             reader.Close();
         }
         /// <summary>
@@ -108,17 +99,17 @@ namespace migration
         /// </summary>
         /// <param name="connection">Соединение с базой, где храняться скрипты понижения (база должна быть выбрана)</param>
         /// <param name="output">XML, куда записываются скрипты</param>
-        private static void WriteScriptsDown(SqlConnection connection, XmlWriter output)
+        private static void WriteScriptsDown()
         {
-            output.WriteStartElement("DownScripts");
-            SqlCommand command = connection.CreateCommand();
-            command.CommandText = "SELECT [dds].[down].[id] AS [id], [dds].[down].[script] AS [script] FROM [dds].[down]";
+            Fix.output.WriteStartElement("DownScripts");
+            SqlCommand command = Fix.connection.CreateCommand();
+            command.CommandText = "SELECT [dds].[down].[id] AS [id], [dds].[down].[script] AS [script] FROM [dds].[down] ORDER BY [dds].[down].[id] DESC";
             SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
-                output.WriteElementString(int.Parse(reader["id"].ToString()).ToString("down00000000"), reader["script"].ToString());
+                Fix.output.WriteElementString(int.Parse(reader["id"].ToString()).ToString("down00000000"), reader["script"].ToString());
             }
-            output.WriteEndElement();
+            Fix.output.WriteEndElement();
             reader.Close();
         }
         /// <summary>
@@ -126,9 +117,9 @@ namespace migration
         /// </summary>
         /// <param name="connection">Соединение с сервером (база должна быть выбрана)</param>
         /// <returns>Количество изменений</returns>
-        private static int GetCountChanges(SqlConnection connection)
+        private static int GetCountChanges()
         {
-            SqlCommand command = connection.CreateCommand();
+            SqlCommand command = Fix.connection.CreateCommand();
             command.CommandText = "SELECT COUNT(*) AS [COUNT] FROM [dds].[up]";
             SqlDataReader reader = command.ExecuteReader();
             reader.Read();

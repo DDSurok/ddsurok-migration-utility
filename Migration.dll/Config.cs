@@ -29,13 +29,13 @@ namespace migration
         /// </summary>
         /// <param name="Comment"></param>
         /// <returns></returns>
-        internal static string GetFileName(string Comment)
+        internal static string GetFileName(RevisionInfo info)
         {
             if (ConfigFile.isLoad)
             {
                 if (!Directory.Exists(ConfigFile.versionDirectory))
                     Directory.CreateDirectory(ConfigFile.versionDirectory);
-                return ConfigFile.versionDirectory + @"\" + DateTime.Today.ToString("dd.MM.yyyy-") + DateTime.Now.ToString("hh.mm-") + ConfigFile.nickName + "-" + Comment + ".xml";
+                return ConfigFile.versionDirectory + @"\" + info.GenerateDateTime.ToString("dd.MM.yyyy-") + info.GenerateDateTime.ToString("hh.mm-") + info.Author + "-" + info.Comment + ".xml";
             }
             else
                 throw new Exception("Не найден файл конфигурации");

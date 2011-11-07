@@ -24,9 +24,9 @@ namespace migration
                 // settings - настройки форматирования (и не только) вывода
                 // (рассмотрен выше)
                 Config.DeleteVersionDirectory();
-                using (Init.output = XmlWriter.Create(Config.GetFileName(Comment), Config.XmlSettings()))
+                using (Init.output = XmlWriter.Create(Config.GetFileName(Init.currentRevision), Config.XmlSettings()))
                 {
-                    GenerateRevisionInfo(Comment);
+                    Init.currentRevision = RevisionInfo.GenerateRevisionInfo(Comment);
 
                     // Создание объектов для работы с БД
                     Init.server = new Server(ConfigFile.serverName);
@@ -36,7 +36,8 @@ namespace migration
                     Init.WriteXMLHeader();
 
                     // Инициализируем базу данных на работу с нашей программой
-                    InitDatabase.Initial(Init.currentRevision);
+                    InitDatabase.Initial();
+                    InitDatabase.UpdateVersionDatabase(Init.currentRevision);
 
                     // Сохранение информации о таблицах
                     // Собственно схемы таблиц
@@ -65,32 +66,6 @@ namespace migration
                 Console.WriteLine(ex.ToString());
                 Console.ReadKey(true);
             }
-        }
-        /// <summary>
-        /// Составление информации по ривизии
-        /// </summary>
-        /// <param name="Comment">Коментарий к ревизии</param>
-        private static void GenerateRevisionInfo(string Comment)
-        {
-            // Сбор информации по ревизии
-            Init.currentRevision.Id = -1;
-            Init.currentRevision.GenerateDateTime = new DateTime(DateTime.Today.Year,
-                                                                 DateTime.Today.Month,
-                                                                 DateTime.Today.Day,
-                                                                 DateTime.Now.Hour,
-                                                                 DateTime.Now.Minute,
-                                                                 DateTime.Now.Second);
-            Init.currentRevision.Author = ConfigFile.nickName;
-            Init.currentRevision.Comment = Comment;
-            SHA1 sha = new SHA1CryptoServiceProvider();
-            byte[] byteHash =
-                sha.ComputeHash(
-                    Encoding.Unicode.GetBytes(
-                        DateTime.Today.ToShortDateString()
-                        + " " + DateTime.Now.ToShortTimeString()));
-            Init.currentRevision.HashCode = "";
-            for (int i = 0; i < byteHash.Length; i++)
-                Init.currentRevision.HashCode += string.Format("{0:x2}", byteHash[i]);
         }
         /// <summary>
         /// Записываем заголовок файла версий

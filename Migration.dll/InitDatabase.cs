@@ -8,7 +8,7 @@ namespace migration
         /// <summary>
         /// Заполняем базу таблицами необходимыми для работы таблицами и триггерами
         /// </summary>
-        public static void Initial(RevisionInfo revision)
+        public static void Initial()
         {
             using (SqlConnection connection = new SqlConnection("Data Source=" + ConfigFile.serverName + ";Integrated Security=True"))
             {
@@ -32,12 +32,6 @@ namespace migration
                 command.ExecuteNonQuery();
                 command.CommandText = "reconfigure";
                 command.ExecuteNonQuery();
-                command.CommandText = "insert into [dds].[version] (hashCode, generateDateTime, nickName, comment) VALUES ('"
-                                      + revision.HashCode + "','"
-                                      + revision.GenerateDateTime.ToString("dd.MM.yyyy:hh.mm") + "','"
-                                      + revision.Author + "','"
-                                      + revision.Comment + "')";
-                command.ExecuteNonQuery();
                 connection.Close();
             }
         }
@@ -60,6 +54,23 @@ namespace migration
                 } while (s != null);
             }
             return retStr;
+        }
+
+        public static void UpdateVersionDatabase(RevisionInfo revision)
+        {
+            using (SqlConnection connection = new SqlConnection("Data Source=" + ConfigFile.serverName + ";Integrated Security=True"))
+            {
+                connection.Open();
+                connection.ChangeDatabase(ConfigFile.databaseName);
+                SqlCommand command = connection.CreateCommand();
+                command.CommandText = "insert into [dds].[version] (hashCode, generateDateTime, nickName, comment) VALUES ('"
+                                      + revision.HashCode + "','"
+                                      + revision.GenerateDateTime.ToString("dd.MM.yyyy:hh.mm") + "','"
+                                      + revision.Author + "','"
+                                      + revision.Comment + "')";
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
         }
     }
 }

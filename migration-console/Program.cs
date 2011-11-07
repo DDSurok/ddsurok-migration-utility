@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Xml;
-using migration;
 
 namespace migration
 {
@@ -37,7 +36,14 @@ namespace migration
                             Fix.Run(args[1]);
                             break;
                         case "--list":
-                            RevisionList.Run();
+                            Console.Write(RevisionList.GetCurrentRevision().ToString("0000+ ") + "Current revision\n\n");
+                            foreach (RevisionInfo info in RevisionList.GetRevisionList())
+                            {
+                                Console.Write(info.Id.ToString("0000  ") + "Author: " + info.Author + "\n");
+                                Console.Write(info.GenerateDateTime.ToString("dd MMMM yyyy, hh:mm\n"));
+                                Console.Write("Comment: " + info.Comment + "\n\n");
+                            }
+                            Console.ReadKey(true);
                             break;
                         case "--migrate-to":
                             UpDown.Run(args[1]);
