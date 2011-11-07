@@ -1,4 +1,4 @@
-﻿CREATE FUNCTION [dds].RollBackScriptCLR(@TypeEvent [nvarchar](max), @UpScript [nvarchar](max))
+﻿CREATE FUNCTION [dds].RollBackScriptCLR(@data xml)
 RETURNS [nvarchar](max)
 WITH EXECUTE AS CALLER
 AS 

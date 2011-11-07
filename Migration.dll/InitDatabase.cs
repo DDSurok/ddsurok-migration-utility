@@ -15,6 +15,8 @@ namespace migration
                 connection.Open();
                 connection.ChangeDatabase(ConfigFile.databaseName);
                 SqlCommand command = connection.CreateCommand();
+                command.CommandText = "ALTER DATABASE [" + ConfigFile.databaseName + "] SET TRUSTWORTHY ON";
+                command.ExecuteNonQuery();
                 command.CommandText = InitDatabase.LoadFileToStringCollection("SQL/IfExists.sql");
                 command.ExecuteNonQuery();
                 command.CommandText = InitDatabase.LoadFileToStringCollection("SQL/CreateSchema.sql");
@@ -22,7 +24,7 @@ namespace migration
                 command.CommandText = InitDatabase.LoadFileToStringCollection("SQL/CreateTables.sql");
                 command.ExecuteNonQuery();
                 System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(".");
-                command.CommandText = "CREATE ASSEMBLY CLRFunctions FROM '" + di.FullName + @"\SqlCLR.dll'";
+                command.CommandText = "CREATE ASSEMBLY CLRFunctions FROM '" + di.FullName + @"\SqlCLR\SqlCLR.dll' WITH PERMISSION_SET = UNSAFE";
                 command.ExecuteNonQuery();
                 command.CommandText = InitDatabase.LoadFileToStringCollection("SQL/CreateCLRFunction.sql");
                 command.ExecuteNonQuery();

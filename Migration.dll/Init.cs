@@ -18,53 +18,45 @@ namespace migration
         /// </summary>
         static public void Run(string Comment)
         {
-            try
+            // FileName - имя файла, куда будет сохранен XML-документ
+            // settings - настройки форматирования (и не только) вывода
+            // (рассмотрен выше)
+            Config.DeleteVersionDirectory();
+            using (Init.output = XmlWriter.Create(Config.GetFileName(Init.currentRevision), Config.XmlSettings()))
             {
-                // FileName - имя файла, куда будет сохранен XML-документ
-                // settings - настройки форматирования (и не только) вывода
-                // (рассмотрен выше)
-                Config.DeleteVersionDirectory();
-                using (Init.output = XmlWriter.Create(Config.GetFileName(Init.currentRevision), Config.XmlSettings()))
-                {
-                    Init.currentRevision = RevisionInfo.GenerateRevisionInfo(Comment);
+                Init.currentRevision = RevisionInfo.GenerateRevisionInfo(Comment);
 
-                    // Создание объектов для работы с БД
-                    Init.server = new Server(ConfigFile.serverName);
-                    Init.database = server.Databases[ConfigFile.databaseName];
+                // Создание объектов для работы с БД
+                Init.server = new Server(ConfigFile.serverName);
+                Init.database = server.Databases[ConfigFile.databaseName];
                     
-                    // Пишем информацию в XML о типе записи
-                    Init.WriteXMLHeader();
+                // Пишем информацию в XML о типе записи
+                Init.WriteXMLHeader();
 
-                    // Инициализируем базу данных на работу с нашей программой
-                    InitDatabase.Initial();
-                    InitDatabase.UpdateVersionDatabase(Init.currentRevision);
+                // Инициализируем базу данных на работу с нашей программой
+                InitDatabase.Initial();
+                InitDatabase.UpdateVersionDatabase(Init.currentRevision);
 
-                    // Сохранение информации о таблицах
-                    // Собственно схемы таблиц
-                    Init.GenerateTableScripts();
-                    // Триггеры к таблицам
-                    Init.GenerateTriggerScripts();
-                    // Индексы к таблицам
-                    Init.GenerateIndexScripts();
-                    // Проверки к таблицам
-                    Init.GenerateCheckScripts();
-                    // Внешние ключи
-                    Init.GenerateForeignKeyScripts();
-                    // Сохранение информации о правилах
-                    Init.GenerateRuleScripts();
-                    // Сохранение информации о ролях
-                    Init.GenerateRoleScripts();
-                    // Сохранение информации о хранимых процедурах
-                    Init.GenerateStoredProcScripts();
+                // Сохранение информации о таблицах
+                // Собственно схемы таблиц
+                Init.GenerateTableScripts();
+                // Триггеры к таблицам
+                Init.GenerateTriggerScripts();
+                // Индексы к таблицам
+                Init.GenerateIndexScripts();
+                // Проверки к таблицам
+                Init.GenerateCheckScripts();
+                // Внешние ключи
+                Init.GenerateForeignKeyScripts();
+                // Сохранение информации о правилах
+                Init.GenerateRuleScripts();
+                // Сохранение информации о ролях
+                Init.GenerateRoleScripts();
+                // Сохранение информации о хранимых процедурах
+                Init.GenerateStoredProcScripts();
 
-                    // Пишем подвал XML-документа
-                    Init.WriteXMLSuffix();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                Console.ReadKey(true);
+                // Пишем подвал XML-документа
+                Init.WriteXMLSuffix();
             }
         }
         /// <summary>
