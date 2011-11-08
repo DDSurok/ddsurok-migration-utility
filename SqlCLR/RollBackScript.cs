@@ -1,31 +1,73 @@
-﻿using System;
-using System.Data.SqlClient;
+﻿using System.Collections.Generic;
 using System.Data.SqlTypes;
-using System.IO;
 using System.Xml;
-using Microsoft.SqlServer.Server;
+using Microsoft.SqlServer.Management.Smo;
 
-public partial class UserDefinedFunctions
+public class Options
+{
+    public string 
+        EventType,
+        ServerName,
+        DatabaseName,
+        ObjectName,
+        SchemaName,
+        CommandText;
+}
+
+public class UserDefinedFunctions
 {
     [Microsoft.SqlServer.Server.SqlFunction]
     public static SqlString RollBackScript(SqlXml data)
     {
+        Options options = new Options();
         // Поместите здесь свой код
         string returnString = string.Empty;
-        Stream ms = new MemoryStream();
-        using (XmlWriter output = XmlWriter.Create(ms))
+        using (XmlReader reader = data.CreateReader())
         {
-            output.WriteNode(data.CreateReader(), true);
-        }
-        using (TextReader tr = new StreamReader(ms))
-        {
-            string temp;
-            do
+            while (reader.Read())
             {
-                temp = tr.ReadLine();
-                returnString += temp + "_";
-            } while (temp == "");
+                switch (reader.NodeType)
+                {
+                    case XmlNodeType.Element:
+                        switch (reader.Name)
+                        {
+                            case "EventType":
+                                reader.Read();
+                                options.EventType = reader.Value;
+                                break;
+                            case "ServerName":
+                                reader.Read();
+                                options.ServerName = reader.Value;
+                                break;
+                            case "DatabaseName":
+                                reader.Read();
+                                options.DatabaseName = reader.Value;
+                                break;
+                            case "ObjectName":
+                                reader.Read();
+                                options.ObjectName = reader.Value;
+                                break;
+                            case "SchemaName":
+                                reader.Read();
+                                options.SchemaName = reader.Value;
+                                break;
+                            case "CommandText":
+                                reader.Read();
+                                options.CommandText = reader.Value;
+                                break;
+                        }
+                        break;
+                    case XmlNodeType.Text:
+                    case XmlNodeType.XmlDeclaration:
+                    case XmlNodeType.ProcessingInstruction:
+                    case XmlNodeType.Comment:
+                    case XmlNodeType.EndElement:
+                        break;
+                }
+            }
         }
+        Server server = new Server(options.ServerName);
+        Database db = server.Databases[options.DatabaseName];
         return new SqlString(returnString);
     }
 };
