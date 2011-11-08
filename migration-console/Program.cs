@@ -35,6 +35,9 @@ namespace migration
                         case "--fix":
                             Fix.Run(args[1]);
                             break;
+                        case "--forgot":
+                            Forgot.Run();
+                            break;
                         case "--list":
                             Console.Write(RevisionList.GetCurrentRevision().ToString("0000+ ") + "Current revision\n\n");
                             foreach (RevisionInfo info in RevisionList.GetRevisionList())

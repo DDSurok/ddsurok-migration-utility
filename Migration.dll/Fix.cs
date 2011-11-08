@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.SqlClient;
-using System.Xml;
+﻿using System.Data.SqlClient;
 using System.IO;
-using System.Security.Cryptography;
-using System.Diagnostics;
+using System.Xml;
 
 namespace migration
 {

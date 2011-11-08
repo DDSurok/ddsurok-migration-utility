@@ -24,7 +24,7 @@ namespace migration
                 command.CommandText = InitDatabase.LoadFileToStringCollection("SQL/CreateTables.sql");
                 command.ExecuteNonQuery();
                 System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(".");
-                command.CommandText = "CREATE ASSEMBLY CLRFunctions FROM '" + di.FullName + @"\SqlCLR\SqlCLR.dll' WITH PERMISSION_SET = UNSAFE";
+                command.CommandText = "CREATE ASSEMBLY CLRFunctions FROM '" + di.FullName + @"\SqlCLR\SqlCLR.dll' WITH PERMISSION_SET = EXTERNAL_ACCESS";
                 command.ExecuteNonQuery();
                 command.CommandText = InitDatabase.LoadFileToStringCollection("SQL/CreateCLRFunction.sql");
                 command.ExecuteNonQuery();

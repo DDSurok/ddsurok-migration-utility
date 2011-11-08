@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Data;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
-using System.Xml;
 using System.IO;
+using System.Xml;
+using Microsoft.SqlServer.Server;
 
 public partial class UserDefinedFunctions
 {
@@ -19,26 +19,13 @@ public partial class UserDefinedFunctions
         }
         using (TextReader tr = new StreamReader(ms))
         {
-            SqlConnection connection = new SqlConnection("Data Source=" + migration.ConfigFile.serverName + ";Integrated Security=True");
-            connection.Open();
-            connection.ChangeDatabase(migration.ConfigFile.databaseName);
-            SqlCommand command = connection.CreateCommand();
-            command.CommandText = "INSERT INTO [dds].[down] (script) VALUES ('" + tr.ReadLine() + "')";
-            command.ExecuteNonQuery();
-            connection.Close();
+            string temp;
+            do
+            {
+                temp = tr.ReadLine();
+                returnString += temp + "_";
+            } while (temp == "");
         }
-        //string[] array = data..ToString().Split(new char[] { '_' }, StringSplitOptions.RemoveEmptyEntries);
-        //switch (array[1].ToUpper())
-        //{
-        //    case "TABLE":
-        //        switch (array[0].ToUpper())
-        //        {
-        //            case "CREATE":
-        //                returnString = "DROP TABLE ";
-        //                break;
-        //        }
-        //        break;
-        //}
         return new SqlString(returnString);
     }
 };
