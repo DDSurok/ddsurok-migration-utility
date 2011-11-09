@@ -15,19 +15,19 @@ namespace migration
                 connection.Open();
                 connection.ChangeDatabase(ConfigFile.databaseName);
                 SqlCommand command = connection.CreateCommand();
-                //command.CommandText = "ALTER DATABASE [" + ConfigFile.databaseName + "] SET TRUSTWORTHY ON";
-                //command.ExecuteNonQuery();
+                command.CommandText = "ALTER DATABASE [" + ConfigFile.databaseName + "] SET TRUSTWORTHY ON";
+                command.ExecuteNonQuery();
                 command.CommandText = InitDatabase.LoadFileToStringCollection("SQL/IfExists.sql");
                 command.ExecuteNonQuery();
                 command.CommandText = InitDatabase.LoadFileToStringCollection("SQL/CreateSchema.sql");
                 command.ExecuteNonQuery();
                 command.CommandText = InitDatabase.LoadFileToStringCollection("SQL/CreateTables.sql");
                 command.ExecuteNonQuery();
-                //System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(".");
-                //command.CommandText = "CREATE ASSEMBLY CLRFunctions FROM '" + di.FullName + @"\SqlCLR\SqlCLR.dll' WITH PERMISSION_SET = UNSAFE";
-                //command.ExecuteNonQuery();
-                //command.CommandText = InitDatabase.LoadFileToStringCollection("SQL/CreateCLRFunction.sql");
-                //command.ExecuteNonQuery();
+                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(".");
+                command.CommandText = "CREATE ASSEMBLY CLRFunctions FROM '" + di.FullName + @"\SqlCLR\SqlCLR.dll' WITH PERMISSION_SET = UNSAFE";
+                command.ExecuteNonQuery();
+                command.CommandText = InitDatabase.LoadFileToStringCollection("SQL/CreateCLRFunction.sql");
+                command.ExecuteNonQuery();
                 command.CommandText = InitDatabase.LoadFileToStringCollection("SQL/CreateDDLTriggers.sql");
                 command.ExecuteNonQuery();
                 command.CommandText = "sp_configure 'clr enabled', 1";
@@ -57,7 +57,10 @@ namespace migration
             }
             return retStr;
         }
-
+        /// <summary>
+        /// Обновить информацию о версии ревизии базы данных
+        /// </summary>
+        /// <param name="revision">Данные о ревизии</param>
         public static void UpdateVersionDatabase(RevisionInfo revision)
         {
             using (SqlConnection connection = new SqlConnection("Data Source=" + ConfigFile.serverName + ";Integrated Security=True"))

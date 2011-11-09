@@ -26,8 +26,11 @@ namespace migration
                                 Console.Write("If continue, full rewrite list of revisions\n");
                                 Console.Write("Press 'y' from continue: ");
                                 char ch = Console.ReadKey(false).KeyChar;
-                                if ( ch == 'y')
+                                if (ch.ToString().ToUpper() == "Y")
+                                {
+                                    Console.WriteLine("\n\n");
                                     Init.Run(args[1]);
+                                }
                             }
                             else
                                 throw new System.Exception("Укажите комментарий");

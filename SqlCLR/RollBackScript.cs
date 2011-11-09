@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Xml;
-using Microsoft.SqlServer.Management.Smo;
+using System.Data.SqlClient;
 
 public class Options
 {
@@ -10,6 +10,7 @@ public class Options
         ServerName,
         DatabaseName,
         ObjectName,
+        ObjectType,
         SchemaName,
         CommandText;
 }
@@ -21,7 +22,7 @@ public class UserDefinedFunctions
     {
         Options options = new Options();
         // Поместите здесь свой код
-        string returnString = string.Empty;
+        string returnString = "";
         using (XmlReader reader = data.CreateReader())
         {
             while (reader.Read())
@@ -47,6 +48,10 @@ public class UserDefinedFunctions
                                 reader.Read();
                                 options.ObjectName = reader.Value;
                                 break;
+                            case "ObjectType":
+                                reader.Read();
+                                options.ObjectType = reader.Value;
+                                break;
                             case "SchemaName":
                                 reader.Read();
                                 options.SchemaName = reader.Value;
@@ -66,9 +71,33 @@ public class UserDefinedFunctions
                 }
             }
         }
-        Server server = new Server(options.ServerName);
-        Database db = server.Databases[options.DatabaseName];
+        SqlConnection connection = new SqlConnection("Context Connection=True");
+        connection.Open();
+        switch (options.ObjectType)
+        {
+            case "TABLE":
+                switch (options.EventType)
+                {
+                    case "DROP_TABLE":
+                        returnString = GetScriptCreateTable(connection, options);
+                        break;
+                    case "CREATE_TABLE":
+                        returnString = "DROP TABLE [" + options.SchemaName + "].[" + options.ObjectName + "]";
+                        break;
+                }
+                break;
+        }
+        connection.Close();
         return new SqlString(returnString);
+    }
+    
+    private static string GetScriptCreateTable(SqlConnection connection, Options options)
+    {
+        SqlCommand command = connection.CreateCommand();
+        command.CommandText = "SELECT OBJECT_DEFINITION(OBJECT_ID([" + options.SchemaName + "].[" + options.ObjectName + "])) AS SCRIPT";
+        SqlDataReader reader = command.ExecuteReader();
+        reader.Read();
+        return reader["SCRIPT"].ToString();
     }
 };
 

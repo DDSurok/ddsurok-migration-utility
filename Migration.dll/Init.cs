@@ -42,20 +42,20 @@ namespace migration
                 Init.GenerateTableScriptsWithDependence();
                 //// Собственно схемы таблиц
                 //Init.GenerateTableScripts();
-                //// Триггеры к таблицам
-                //Init.GenerateTriggerScripts();
+                // Триггеры к таблицам
+                Init.GenerateTriggerScripts();
                 //// Индексы к таблицам
                 //Init.GenerateIndexScripts();
                 //// Проверки к таблицам
                 //Init.GenerateCheckScripts();
                 //// Внешние ключи
                 //Init.GenerateForeignKeyScripts();
-                //// Сохранение информации о правилах
-                //Init.GenerateRuleScripts();
-                //// Сохранение информации о ролях
-                //Init.GenerateRoleScripts();
-                //// Сохранение информации о хранимых процедурах
-                //Init.GenerateStoredProcScripts();
+                // Сохранение информации о правилах
+                Init.GenerateRuleScripts();
+                // Сохранение информации о ролях
+                Init.GenerateRoleScripts();
+                // Сохранение информации о хранимых процедурах
+                Init.GenerateStoredProcScripts();
 
                 // Пишем подвал XML-документа
                 Init.WriteXMLSuffix();
