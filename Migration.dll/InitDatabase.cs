@@ -24,15 +24,17 @@ namespace migration
                 command.CommandText = InitDatabase.LoadFileToStringCollection("SQL/CreateTables.sql");
                 command.ExecuteNonQuery();
                 System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(".");
-                command.CommandText = "CREATE ASSEMBLY CLRFunctions FROM '" + di.FullName + @"\SqlCLR\SqlCLR.dll' WITH PERMISSION_SET = UNSAFE";
+                command.CommandText = @"CREATE ASSEMBLY CLRFunctions FROM '" + di.FullName + @"\SqlCLR\SqlCLR.dll' WITH PERMISSION_SET = UNSAFE";
+                command.ExecuteNonQuery();
+                command.CommandText = @"CREATE ASYMMETRIC KEY [DDSurok] FROM EXECUTABLE FILE = '" + di.FullName + @"\SqlCLR\SqlCLR.dll'";
                 command.ExecuteNonQuery();
                 command.CommandText = InitDatabase.LoadFileToStringCollection("SQL/CreateCLRFunction.sql");
                 command.ExecuteNonQuery();
                 command.CommandText = InitDatabase.LoadFileToStringCollection("SQL/CreateDDLTriggers.sql");
                 command.ExecuteNonQuery();
-                command.CommandText = "sp_configure 'clr enabled', 1";
+                command.CommandText = @"sp_configure 'clr enabled', 1";
                 command.ExecuteNonQuery();
-                command.CommandText = "reconfigure";
+                command.CommandText = @"reconfigure";
                 command.ExecuteNonQuery();
                 connection.Close();
             }
