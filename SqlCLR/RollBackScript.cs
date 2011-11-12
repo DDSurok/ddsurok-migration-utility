@@ -86,6 +86,9 @@ public class UserDefinedFunctions
                         break;
                 }
                 break;
+            default:
+                returnString = "необработанная операция";
+                break;
         }
         connection.Close();
         return new SqlString(returnString);
@@ -94,7 +97,7 @@ public class UserDefinedFunctions
     private static string GetScriptCreateTable(SqlConnection connection, Options options)
     {
         SqlCommand command = connection.CreateCommand();
-        command.CommandText = "SELECT OBJECT_DEFINITION(OBJECT_ID([" + options.SchemaName + "].[" + options.ObjectName + "])) AS SCRIPT";
+        command.CommandText = "SELECT OBJECT_DEFINITION(OBJECT_ID('[" + options.SchemaName + "].[" + options.ObjectName + "]')) AS SCRIPT";
         SqlDataReader reader = command.ExecuteReader();
         reader.Read();
         return reader["SCRIPT"].ToString();
