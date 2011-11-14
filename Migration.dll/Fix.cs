@@ -60,6 +60,9 @@ namespace migration
             Fix.output.WriteAttributeString("Create_date", Fix.currentRevision.GenerateDateTime.ToShortDateString());
             Fix.output.WriteAttributeString("Create_time", Fix.currentRevision.GenerateDateTime.ToShortTimeString());
             Fix.output.WriteAttributeString("Id", Fix.currentRevision.HashCode);
+            Fix.output.WriteStartElement("Comment");
+            Fix.output.WriteString(Fix.currentRevision.Comment);
+            Fix.output.WriteEndElement();
         }
         /// <summary>
         /// Запись подвала записи в XML

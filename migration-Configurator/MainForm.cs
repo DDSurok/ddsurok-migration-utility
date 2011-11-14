@@ -102,6 +102,7 @@ namespace migration
                     {
                         this.ExportConfigure();
                         MessageBox.Show("Файл конфигурации успешно создан");
+                        this.Close();
                     }
                     catch (Exception ex)
                     {
@@ -117,6 +118,7 @@ namespace migration
                     {
                         this.ExportConfigure();
                         MessageBox.Show("Файл конфигурации успешно создан");
+                        this.Close();
                     }
                     catch (Exception ex)
                     {

@@ -106,7 +106,7 @@
             this.btnExport.Name = "btnExport";
             this.btnExport.Size = new System.Drawing.Size(75, 23);
             this.btnExport.TabIndex = 6;
-            this.btnExport.Text = "Continue";
+            this.btnExport.Text = @"Export & Exit";
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 

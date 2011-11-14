@@ -35,7 +35,7 @@ namespace migration
             {
                 if (!Directory.Exists(ConfigFile.versionDirectory))
                     Directory.CreateDirectory(ConfigFile.versionDirectory);
-                return ConfigFile.versionDirectory + @"\" + info.GenerateDateTime.ToString("dd.MM.yyyy-") + info.GenerateDateTime.ToString("hh.mm-") + info.Author + "-" + info.Comment + ".xml";
+                return ConfigFile.versionDirectory + @"\" + info.GenerateDateTime.ToString("dd.MM.yyyy-") + info.GenerateDateTime.ToString("hh.mm-") + info.Author + ".xml";
             }
             else
                 throw new Exception("Не найден файл конфигурации");

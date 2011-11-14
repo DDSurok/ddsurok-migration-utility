@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace migration
@@ -15,7 +14,7 @@ namespace migration
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ListRevision());
+            Application.Run(new MainForm());
         }
     }
 }

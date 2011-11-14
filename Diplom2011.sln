@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceScriptGenerator", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipeServer", "PipeServer\PipeServer.csproj", "{110BD213-41E6-4EEA-9B82-40B03EB9D20D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "migration-Configurator", "migration-Configurator\migration-Configurator.csproj", "{70518869-6408-4999-A386-811E1678462F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,6 +96,16 @@ Global
 		{110BD213-41E6-4EEA-9B82-40B03EB9D20D}.Release|Mixed Platforms.Build.0 = Release|x86
 		{110BD213-41E6-4EEA-9B82-40B03EB9D20D}.Release|x86.ActiveCfg = Release|x86
 		{110BD213-41E6-4EEA-9B82-40B03EB9D20D}.Release|x86.Build.0 = Release|x86
+		{70518869-6408-4999-A386-811E1678462F}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{70518869-6408-4999-A386-811E1678462F}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{70518869-6408-4999-A386-811E1678462F}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{70518869-6408-4999-A386-811E1678462F}.Debug|x86.ActiveCfg = Debug|x86
+		{70518869-6408-4999-A386-811E1678462F}.Debug|x86.Build.0 = Debug|x86
+		{70518869-6408-4999-A386-811E1678462F}.Release|Any CPU.ActiveCfg = Release|x86
+		{70518869-6408-4999-A386-811E1678462F}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{70518869-6408-4999-A386-811E1678462F}.Release|Mixed Platforms.Build.0 = Release|x86
+		{70518869-6408-4999-A386-811E1678462F}.Release|x86.ActiveCfg = Release|x86
+		{70518869-6408-4999-A386-811E1678462F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

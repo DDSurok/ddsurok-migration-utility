@@ -23,10 +23,9 @@ namespace migration
             // settings - настройки форматирования (и не только) вывода
             // (рассмотрен выше)
             Config.DeleteVersionDirectory();
+            Init.currentRevision = RevisionInfo.GenerateRevisionInfo(Comment);
             using (Init.output = XmlWriter.Create(Config.GetFileName(Init.currentRevision), Config.XmlSettings()))
             {
-                Init.currentRevision = RevisionInfo.GenerateRevisionInfo(Comment);
-
                 // Создание объектов для работы с БД
                 Init.server = new Server(ConfigFile.serverName);
                 Init.database = server.Databases[ConfigFile.databaseName];
@@ -101,6 +100,9 @@ namespace migration
             Init.output.WriteAttributeString("Create_date", Init.currentRevision.GenerateDateTime.ToShortDateString());
             Init.output.WriteAttributeString("Create_time", Init.currentRevision.GenerateDateTime.ToShortTimeString());
             Init.output.WriteAttributeString("Id", Init.currentRevision.HashCode);
+            Init.output.WriteStartElement("Comment");
+            Init.output.WriteString(Init.currentRevision.Comment);
+            Init.output.WriteEndElement();
             Init.output.WriteStartElement("UpScripts");
             Init.output.WriteStartElement("IfExistsDatabase");
             Init.output.WriteString("\n");

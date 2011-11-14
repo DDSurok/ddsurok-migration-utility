@@ -16,53 +16,60 @@ namespace migration
         {
             List<RevisionInfo> returnList = new List<RevisionInfo>();
             int i = 0;
-            foreach(string File in Directory.GetFiles(ConfigFile.versionDirectory))
+            if (Directory.Exists(ConfigFile.versionDirectory))
             {
-                RevisionInfo tempInfo = new RevisionInfo();
-                tempInfo.Id = i;
-                using (XmlReader reader = XmlReader.Create(File))
+                foreach(string File in Directory.GetFiles(ConfigFile.versionDirectory))
                 {
-                    DateTime date = new DateTime();
-                    DateTime time = new DateTime();
-                    
-                    // Читаем данные из Xml
-                    while (reader.Read())
+                    RevisionInfo tempInfo = new RevisionInfo();
+                    tempInfo.Id = i;
+                    using (XmlReader reader = XmlReader.Create(File))
                     {
-                        switch (reader.NodeType)
+                        DateTime date = new DateTime();
+                        DateTime time = new DateTime();
+                    
+                        // Читаем данные из Xml
+                        while (reader.Read())
                         {
-                            case XmlNodeType.Element:
-                                switch (reader.Name)
-                                {
-                                    case "Revision":
-                                        date = DateTime.ParseExact(reader.GetAttribute("Create_date"), "dd.MM.yyyy", CultureInfo.InvariantCulture);
-                                        time = DateTime.ParseExact(reader.GetAttribute("Create_time"), "hh:mm", CultureInfo.InvariantCulture);
-                                        tempInfo.HashCode = reader.GetAttribute("Id");
-                                        break;
-                                }
-                                break;
-                            case XmlNodeType.Attribute:
-                            case XmlNodeType.Text:
-                            case XmlNodeType.XmlDeclaration:
-                            case XmlNodeType.ProcessingInstruction:
-                            case XmlNodeType.Comment:
-                            case XmlNodeType.EndElement:
-                                break;
+                            switch (reader.NodeType)
+                            {
+                                case XmlNodeType.Element:
+                                    switch (reader.Name)
+                                    {
+                                        case "Revision":
+                                            date = DateTime.Parse(reader.GetAttribute("Create_date"));
+                                            time = DateTime.Parse(reader.GetAttribute("Create_time"));
+                                            tempInfo.HashCode = reader.GetAttribute("Id");
+                                            break;
+                                        case "Comment":
+                                            reader.Read();
+                                            tempInfo.Comment = reader.Value;
+                                            break;
+                                    }
+                                    break;
+                                case XmlNodeType.Attribute:
+                                case XmlNodeType.Text:
+                                case XmlNodeType.XmlDeclaration:
+                                case XmlNodeType.ProcessingInstruction:
+                                case XmlNodeType.Comment:
+                                case XmlNodeType.EndElement:
+                                    break;
+                            }
                         }
+
+                        tempInfo.GenerateDateTime = new DateTime(date.Year, date.Month, date.Day, time.Hour, time.Minute, time.Second);
                     }
 
-                    tempInfo.GenerateDateTime = new DateTime(date.Year, date.Month, date.Day, time.Hour, time.Minute, time.Second);
+                    string[] tempArray = File.Substring(File.LastIndexOf('\\') + 1).Split(new char[] { '-' }, 4, StringSplitOptions.None);
+
+                    tempInfo.Author = tempArray[2];
+                    //tempInfo.Comment = tempArray[3].Substring(0, tempArray[3].Length - 4);
+
+                    // Добавляем информацию в список
+                    returnList.Insert(0, tempInfo);
+
+                    // Переключаем счетчик файлов
+                    i++;
                 }
-
-                string[] tempArray = File.Substring(File.LastIndexOf('\\') + 1).Split(new char[] { '-' }, 4, StringSplitOptions.None);
-
-                tempInfo.Author = tempArray[2];
-                tempInfo.Comment = tempArray[3].Substring(0, tempArray[3].Length - 4);
-
-                // Добавляем информацию в список
-                returnList.Insert(0, tempInfo);
-
-                // Переключаем счетчик файлов
-                i++;
             }
             return returnList;
         }
@@ -103,11 +110,11 @@ namespace migration
             // Сбор информации по ревизии
             returnValue.Id = -1;
             returnValue.GenerateDateTime = new DateTime(DateTime.Today.Year,
-                                                                 DateTime.Today.Month,
-                                                                 DateTime.Today.Day,
-                                                                 DateTime.Now.Hour,
-                                                                 DateTime.Now.Minute,
-                                                                 DateTime.Now.Second);
+                                                        DateTime.Today.Month,
+                                                        DateTime.Today.Day,
+                                                        DateTime.Now.Hour,
+                                                        DateTime.Now.Minute,
+                                                        DateTime.Now.Second);
             returnValue.Author = ConfigFile.nickName;
             returnValue.Comment = Comment;
             SHA1 sha = new SHA1CryptoServiceProvider();
