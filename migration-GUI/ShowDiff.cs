@@ -12,10 +12,25 @@ namespace migration
 {
     public partial class ShowDiff : Form, IActiveComment
     {
+        /// <summary>
+        /// 
+        /// </summary>
         SqlConnection connection;
+        /// <summary>
+        /// 
+        /// </summary>
         DataSet ds1, ds2;
+        /// <summary>
+        /// 
+        /// </summary>
         SqlDataAdapter da1, da2;
+        /// <summary>
+        /// 
+        /// </summary>
         public string ActiveComment { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public ShowDiff()
         {
             InitializeComponent();
@@ -39,23 +54,37 @@ namespace migration
             this.diffDown.DataSource = ds2;
             this.diffDown.DataMember = "down";
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ShowDiff_FormClosed(object sender, FormClosedEventArgs e)
         {
             this.SaveUpdate();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         private void SaveUpdate()
         {
             this.da1.Update(ds1, "up");
             this.da2.Update(ds2, "down");
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnFix_Click(object sender, EventArgs e)
         {
             this.SaveUpdate();

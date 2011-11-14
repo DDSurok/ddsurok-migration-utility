@@ -59,9 +59,9 @@ namespace migration
                         tempInfo.GenerateDateTime = new DateTime(date.Year, date.Month, date.Day, time.Hour, time.Minute, time.Second);
                     }
 
-                    string[] tempArray = File.Substring(File.LastIndexOf('\\') + 1).Split(new char[] { '-' }, 4, StringSplitOptions.None);
+                    string[] tempArray = File.Substring(File.LastIndexOf('\\') + 1).Split(new char[] { '-' }, 3, StringSplitOptions.None);
 
-                    tempInfo.Author = tempArray[2];
+                    tempInfo.Author = tempArray[2].Substring(0, tempArray[2].Length - 4);
                     //tempInfo.Comment = tempArray[3].Substring(0, tempArray[3].Length - 4);
 
                     // Добавляем информацию в список

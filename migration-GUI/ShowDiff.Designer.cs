@@ -51,16 +51,16 @@
             this.diffDown.AllowUserToAddRows = false;
             this.diffDown.AllowUserToDeleteRows = false;
             this.diffDown.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.diffDown.Location = new System.Drawing.Point(448, 13);
+            this.diffDown.Location = new System.Drawing.Point(451, 13);
             this.diffDown.Name = "diffDown";
-            this.diffDown.Size = new System.Drawing.Size(444, 482);
+            this.diffDown.Size = new System.Drawing.Size(428, 482);
             this.diffDown.TabIndex = 1;
             // 
             // btnFix
             // 
-            this.btnFix.Location = new System.Drawing.Point(643, 501);
+            this.btnFix.Location = new System.Drawing.Point(713, 501);
             this.btnFix.Name = "btnFix";
-            this.btnFix.Size = new System.Drawing.Size(122, 23);
+            this.btnFix.Size = new System.Drawing.Size(97, 23);
             this.btnFix.TabIndex = 2;
             this.btnFix.Text = "Зафиксировать";
             this.btnFix.UseVisualStyleBackColor = true;
@@ -68,9 +68,9 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(771, 501);
+            this.btnCancel.Location = new System.Drawing.Point(816, 501);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(121, 23);
+            this.btnCancel.Size = new System.Drawing.Size(63, 23);
             this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "Отмена";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -80,7 +80,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(904, 536);
+            this.ClientSize = new System.Drawing.Size(891, 536);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnFix);
             this.Controls.Add(this.diffDown);
