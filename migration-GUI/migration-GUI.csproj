@@ -68,6 +68,7 @@
     <Compile Include="EnterComment.Designer.cs">
       <DependentUpon>EnterComment.cs</DependentUpon>
     </Compile>
+    <Compile Include="IActiveComment.cs" />
     <Compile Include="ListRevision.cs">
       <SubType>Form</SubType>
     </Compile>

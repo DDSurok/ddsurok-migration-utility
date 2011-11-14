@@ -10,11 +10,12 @@ using System.Data.SqlClient;
 
 namespace migration
 {
-    public partial class ShowDiff : Form
+    public partial class ShowDiff : Form, IActiveComment
     {
         SqlConnection connection;
         DataSet ds1, ds2;
         SqlDataAdapter da1, da2;
+        public string ActiveComment { get; set; }
         public ShowDiff()
         {
             InitializeComponent();
@@ -41,8 +42,27 @@ namespace migration
 
         private void ShowDiff_FormClosed(object sender, FormClosedEventArgs e)
         {
+            this.SaveUpdate();
+        }
+
+        private void SaveUpdate()
+        {
             this.da1.Update(ds1, "up");
             this.da2.Update(ds2, "down");
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void btnFix_Click(object sender, EventArgs e)
+        {
+            this.SaveUpdate();
+            EnterComment form = new EnterComment(this);
+            form.ShowDialog();
+            Fix.Run(this.ActiveComment);
+            this.Close();
         }
     }
 }

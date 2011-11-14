@@ -11,8 +11,9 @@ namespace migration
 {
     public partial class EnterComment : Form
     {
-        private ListRevision _Parent;
-        public EnterComment(ListRevision parent)
+        private IActiveComment _Parent;
+
+        public EnterComment(IActiveComment parent)
         {
             this._Parent = parent;
             InitializeComponent();

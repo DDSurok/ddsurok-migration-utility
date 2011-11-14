@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace migration
 {
-    public partial class ListRevision : Form
+    public partial class ListRevision : Form, IActiveComment
     {
-        public string ActiveComment;
+        public string ActiveComment { get; set; }
 
         List<RevisionInfo> revisionList;
 
@@ -68,6 +68,7 @@ namespace migration
             using (ShowDiff form = new ShowDiff())
             {
                 form.ShowDialog();
+                ReloadListOfRevisions();
             }
         }
     }
