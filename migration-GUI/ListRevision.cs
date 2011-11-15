@@ -19,7 +19,9 @@ namespace migration
         /// 
         /// </summary>
         List<RevisionInfo> revisionList;
-
+        /// <summary>
+        /// 
+        /// </summary>
         RevisionInfo _CurrentRevision;
         /// <summary>
         /// 
@@ -60,7 +62,7 @@ namespace migration
         /// </summary>
         private void ReloadListOfRevisions()
         {
-            this.revisionList = RevisionList.GetRevisionList();
+            this.revisionList = RevisionList.GetReverseRevisionList();
             this.Revisions.BeginUpdate();
             this.Revisions.Items.Clear();
             string Comment;
@@ -73,7 +75,7 @@ namespace migration
                     "Comment: " + Comment);
             }
             this.Revisions.EndUpdate();
-            this._CurrentRevision = this.revisionList[this.revisionList.Count-1-RevisionList.GetCurrentRevision()];
+            this._CurrentRevision = RevisionList.GetRevisionList()[RevisionList.GetCurrentRevision()];
             Comment = this._CurrentRevision.Comment.Replace("\n", " \t");
             this.CurrentRevision.Text = this._CurrentRevision.Id.ToString("0000  ") +
                 "Author: " + this._CurrentRevision.Author + "\n\t" +

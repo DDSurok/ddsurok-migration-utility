@@ -62,7 +62,6 @@
     <Compile Include="InitDatabase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RevisionList.cs" />
-    <Compile Include="ToFirst.cs" />
     <Compile Include="UpDown.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

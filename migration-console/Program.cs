@@ -43,7 +43,7 @@ namespace migration
                             break;
                         case "--list":
                             Console.Write(RevisionList.GetCurrentRevision().ToString("0000+ ") + "Current revision\n\n");
-                            foreach (RevisionInfo info in RevisionList.GetRevisionList())
+                            foreach (RevisionInfo info in RevisionList.GetReverseRevisionList())
                             {
                                 Console.Write(info.Id.ToString("0000  ") + "Author: " + info.Author + "\n");
                                 Console.Write(info.GenerateDateTime.ToString("dd MMMM yyyy, hh:mm\n"));
