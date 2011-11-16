@@ -6,6 +6,10 @@ namespace migration
 {
     public static class UpDown
     {
+        /// <summary>
+        /// Предоставляет доступ к основному механизму класса
+        /// </summary>
+        /// <param name="Version"></param>
         public static void Run(int Version)
         {
             int CurrentVersion = RevisionList.GetCurrentRevision();
