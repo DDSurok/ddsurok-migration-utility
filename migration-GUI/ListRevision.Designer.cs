@@ -46,14 +46,14 @@
             this.Revisions.Location = new System.Drawing.Point(12, 64);
             this.Revisions.Name = "Revisions";
             this.Revisions.Size = new System.Drawing.Size(759, 329);
-            this.Revisions.TabIndex = 0;
+            this.Revisions.TabIndex = 1;
             // 
             // btnInit
             // 
             this.btnInit.Location = new System.Drawing.Point(12, 399);
             this.btnInit.Name = "btnInit";
             this.btnInit.Size = new System.Drawing.Size(113, 23);
-            this.btnInit.TabIndex = 1;
+            this.btnInit.TabIndex = 2;
             this.btnInit.Text = "Инициализировать";
             this.btnInit.UseVisualStyleBackColor = true;
             this.btnInit.Click += new System.EventHandler(this.btnInit_Click);
@@ -63,7 +63,7 @@
             this.btnFix.Location = new System.Drawing.Point(131, 399);
             this.btnFix.Name = "btnFix";
             this.btnFix.Size = new System.Drawing.Size(98, 23);
-            this.btnFix.TabIndex = 2;
+            this.btnFix.TabIndex = 3;
             this.btnFix.Text = "Зафиксировать";
             this.btnFix.UseVisualStyleBackColor = true;
             this.btnFix.Click += new System.EventHandler(this.btnFix_Click);
@@ -72,17 +72,19 @@
             // 
             this.btnMigrate.Location = new System.Drawing.Point(235, 399);
             this.btnMigrate.Name = "btnMigrate";
+            this.btnMigrate.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.btnMigrate.Size = new System.Drawing.Size(112, 23);
-            this.btnMigrate.TabIndex = 3;
-            this.btnMigrate.Text = "Мигрировать к ...";
+            this.btnMigrate.TabIndex = 4;
+            this.btnMigrate.Text = "Мигрировать до ...";
             this.btnMigrate.UseVisualStyleBackColor = true;
+            this.btnMigrate.Click += new System.EventHandler(this.btnMigrate_Click);
             // 
             // btnBaseline
             // 
             this.btnBaseline.Location = new System.Drawing.Point(353, 399);
             this.btnBaseline.Name = "btnBaseline";
             this.btnBaseline.Size = new System.Drawing.Size(276, 23);
-            this.btnBaseline.TabIndex = 4;
+            this.btnBaseline.TabIndex = 5;
             this.btnBaseline.Text = "Сгенерировать скрипт первоначального создания";
             this.btnBaseline.UseVisualStyleBackColor = true;
             // 
@@ -95,16 +97,17 @@
             this.btnForgot.Location = new System.Drawing.Point(635, 399);
             this.btnForgot.Name = "btnForgot";
             this.btnForgot.Size = new System.Drawing.Size(136, 23);
-            this.btnForgot.TabIndex = 5;
+            this.btnForgot.TabIndex = 6;
             this.btnForgot.Text = "Очистить базу данных";
             this.btnForgot.UseVisualStyleBackColor = true;
             // 
             // CurrentRevision
             // 
+            this.CurrentRevision.Enabled = false;
             this.CurrentRevision.Location = new System.Drawing.Point(12, 25);
             this.CurrentRevision.Name = "CurrentRevision";
             this.CurrentRevision.Size = new System.Drawing.Size(759, 20);
-            this.CurrentRevision.TabIndex = 6;
+            this.CurrentRevision.TabIndex = 0;
             // 
             // label1
             // 

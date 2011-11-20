@@ -189,5 +189,25 @@ namespace migration
             ret.Reverse();
             return ret;
         }
+        /// <summary>
+        /// Преобразовать информацию о ревизии в одну строку
+        /// </summary>
+        /// <returns>Строка с информацией о ревизии</returns>
+        public override string ToString()
+        {
+            return this.Id.ToString("0000  ") +
+                    "Author: " + this.Author + "\t" +
+                    this.GenerateDateTime.ToString("dd MMMM yyyy, hh:mm\t") +
+                    "Comment: " + this.Comment.Replace("\n", " \t");
+        }
+
+        public string[] ToStrings()
+        {
+            string[] ret = new string[3];
+            ret[0] = this.Id.ToString("0000  ") + "Author: " + this.Author;
+            ret[1] = this.GenerateDateTime.ToString("dd MMMM yyyy, hh:mm");
+            ret[2] = "Comment: " + this.Comment;
+            return ret;
+        }
     }
 }

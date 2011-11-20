@@ -9,10 +9,14 @@ namespace migration
         /// <summary>
         /// Предоставляет доступ к основному механизму класса
         /// </summary>
-        /// <param name="Version"></param>
+        /// <param name="Version">Номер версии-результата миграции</param>
         public static void Run(int Version)
         {
             int CurrentVersion = RevisionList.GetCurrentRevision();
+            if (Version == CurrentVersion)
+            {
+                // Отбрасывание изменений
+            }
             if (CurrentVersion > Version)       // Понижение версии
             {
                 List<RevisionInfo> list = RevisionList.GetRevisionList().GetRange(Version + 1, CurrentVersion - Version);
@@ -21,17 +25,14 @@ namespace migration
                 {
                     UpDown.ApplyScripts(info.GetDownScripts());
                 }
+
             }
-            else if (CurrentVersion < Version)  // Повышение версии
+            else                                // Повышение версии
             {
                 foreach (RevisionInfo info in RevisionList.GetRevisionList().GetRange(CurrentVersion + 1, Version - CurrentVersion))
                 {
                     UpDown.ApplyScripts(info.GetUpScripts());
                 }
-            }
-            else                                // Отбрасывание изменений
-            {
-                // TODO
             }
         }
         /// <summary>

@@ -11,21 +11,65 @@ namespace migration
 {
     public partial class ListRevision : Form, IActiveComment
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public string ActiveComment { get; set; }
+        List<RevisionInfo> _revisionList;
+        List<RevisionInfo> revisionList
+        {
+            get
+            {
+                return this._revisionList;
+            }
+            // при заполнении списка ревизий, он автоматически отобразится в окне
+            set
+            {
+                this._revisionList = value;
+                this.Revisions.BeginUpdate();
+                this.Revisions.Items.Clear();
+                foreach (RevisionInfo info in this._revisionList)
+                {
+                    this.Revisions.Items.Add(info.ToString());
+                }
+                this.Revisions.EndUpdate();
+            }
+        }
+        int _currentRevision;
+        int currentRevision
+        {
+            get
+            {
+                return _currentRevision;
+            }
+            // при заполнении текущей ревизии, информация автоматически отобразится в окне
+            set
+            {
+                this._currentRevision = value;
+                if (this._currentRevision == -1)
+                {
+                    this.CurrentRevision.Text = @"База данных не инициализирована или ее версия отсутствует в хранилище";
+                    this.btnFix.Enabled = false;
+                    this.btnForgot.Enabled = false;
+                    this.btnBaseline.Enabled = false;
+                    this.btnMigrate.Enabled = false;
+                }
+                else
+                {
+                    this.CurrentRevision.Text = this.revisionList[this.revisionList.Count - 1 - this._currentRevision].ToString();
+                    this.btnFix.Enabled = true;
+                    this.btnForgot.Enabled = true;
+                    this.btnBaseline.Enabled = true;
+                    this.btnMigrate.Enabled = true;
+                }
+            }
+        }
         /// <summary>
-        /// 
+        /// Перезагрузить список ревизий и информацию о текущей версии базы данных
         /// </summary>
-        List<RevisionInfo> revisionList;
-        /// <summary>
-        /// 
-        /// </summary>
-        RevisionInfo _CurrentRevision;
-        /// <summary>
-        /// 
-        /// </summary>
+        private void ReloadListOfRevisions()
+        {
+            this.revisionList = RevisionList.GetReverseRevisionList();
+            this.currentRevision = RevisionList.GetCurrentRevision();
+        }
+        
         public ListRevision()
         {
             InitializeComponent();
@@ -38,11 +82,12 @@ namespace migration
                 MessageBox.Show(ex.Message);
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+
+        private void ListRevision_Shown(object sender, EventArgs e)
+        {
+            ReloadListOfRevisions();
+        }
+
         private void btnInit_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show("Продолжение повлечет за собой удаление всех\nревизий в указанном каталоге и создание новой ревизии.\nПродолжить?",
@@ -57,51 +102,21 @@ namespace migration
                 this.ReloadListOfRevisions();
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        private void ReloadListOfRevisions()
-        {
-            this.revisionList = RevisionList.GetReverseRevisionList();
-            this.Revisions.BeginUpdate();
-            this.Revisions.Items.Clear();
-            string Comment;
-            foreach (RevisionInfo info in this.revisionList)
-            {
-                Comment = info.Comment.Replace("\n", " \t");
-                this.Revisions.Items.Add(info.Id.ToString("0000  ") +
-                    "Author: " + info.Author + "\n\t" +
-                    info.GenerateDateTime.ToString("dd MMMM yyyy, hh:mm\n\t") +
-                    "Comment: " + Comment);
-            }
-            this.Revisions.EndUpdate();
-            this._CurrentRevision = RevisionList.GetRevisionList()[RevisionList.GetCurrentRevision()];
-            Comment = this._CurrentRevision.Comment.Replace("\n", " \t");
-            this.CurrentRevision.Text = this._CurrentRevision.Id.ToString("0000  ") +
-                "Author: " + this._CurrentRevision.Author + "\n\t" +
-                this._CurrentRevision.GenerateDateTime.ToString("dd MMMM yyyy, hh:mm\n\t") +
-                "Comment: " + Comment;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ListRevision_Shown(object sender, EventArgs e)
-        {
-            ReloadListOfRevisions();
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        
         private void btnFix_Click(object sender, EventArgs e)
         {
             using (ShowDiff form = new ShowDiff())
             {
                 form.ShowDialog();
                 ReloadListOfRevisions();
+            }
+        }
+
+        private void btnMigrate_Click(object sender, EventArgs e)
+        {
+            if (this.Revisions.SelectedIndex != -1)
+            {
+                UpDown.Run(this.revisionList[this.Revisions.SelectedIndex].Id);
             }
         }
     }

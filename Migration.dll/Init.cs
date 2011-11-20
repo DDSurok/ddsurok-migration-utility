@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Specialized;
-using System.Security.Cryptography;
-using System.Text;
+﻿using System.Collections.Specialized;
 using System.Xml;
-using Microsoft.SqlServer.Management.Smo;
 using Microsoft.SqlServer.Management.Sdk.Sfc;
+using Microsoft.SqlServer.Management.Smo;
 
 namespace migration
 {
     static public class Init
     {
         static private XmlWriter output;
-        static private Database database;
+        static private Microsoft.SqlServer.Management.Smo.Database database;
         static private Server server;
         static private RevisionInfo currentRevision;
         /// <summary>
@@ -34,8 +31,8 @@ namespace migration
                 Init.WriteXMLHeader();
 
                 // Инициализируем базу данных на работу с нашей программой
-                InitDatabase.Initial();
-                InitDatabase.UpdateVersionDatabase(Init.currentRevision);
+                Database.InitialDatabase();
+                Database.UpdateVersionDatabase(Init.currentRevision);
 
                 // Сохранение информации о таблицах
                 Init.GenerateTableScriptsWithDependence();
@@ -59,35 +56,6 @@ namespace migration
                 // Пишем подвал XML-документа
                 Init.WriteXMLSuffix();
             }
-        }
-
-        private static void GenerateTableScriptsWithDependence()
-        {
-            Init.output.WriteStartElement("Tables");
-            Scripter script = new Scripter(server);
-            script.Options.ScriptDrops = false;
-            script.Options.WithDependencies = true;
-            script.Options.Indexes = true;   // To include indexes
-            script.Options.DriAllConstraints = true;   // to include referential constraints in the script
-
-            // Iterate through the tables in database and script each one. Display the script.   
-            foreach (Table tb in database.Tables)
-            {
-                // check if the table is not a system table
-                if (tb.IsSystemObject == false)
-                {
-                    Init.output.WriteElementString("Header", "[" + tb.Schema + "].[" + tb.Name + "]");
-                    StringCollection sc = script.Script(new Urn[] { tb.Urn });
-                    Init.output.WriteStartElement("script");
-                    Init.output.WriteString("\n");
-                    foreach (string st in sc)
-                    {
-                        Init.output.WriteString(st.Trim() + "\n");
-                    }
-                    Init.output.WriteEndElement();
-                }
-            }
-            Init.output.WriteEndElement();
         }
         /// <summary>
         /// Записываем заголовок файла версий
@@ -126,6 +94,37 @@ namespace migration
             Init.output.WriteEndElement(); // "DownScripts"
             Init.output.WriteEndElement(); // "Revision"
             Init.output.WriteEndDocument();
+        }
+        /// <summary>
+        /// Генерирует скрипты создания таблиц со всеми зависимостями и пишет их в <code>output</code>
+        /// </summary>
+        private static void GenerateTableScriptsWithDependence()
+        {
+            Init.output.WriteStartElement("Tables");
+            Scripter script = new Scripter(server);
+            script.Options.ScriptDrops = false;
+            script.Options.WithDependencies = true;
+            script.Options.Indexes = true;   // To include indexes
+            script.Options.DriAllConstraints = true;   // to include referential constraints in the script
+
+            // Iterate through the tables in database and script each one. Display the script.   
+            foreach (Table tb in database.Tables)
+            {
+                // check if the table is not a system table
+                if (tb.IsSystemObject == false)
+                {
+                    Init.output.WriteElementString("Header", "[" + tb.Schema + "].[" + tb.Name + "]");
+                    StringCollection sc = script.Script(new Urn[] { tb.Urn });
+                    Init.output.WriteStartElement("script");
+                    Init.output.WriteString("\n");
+                    foreach (string st in sc)
+                    {
+                        Init.output.WriteString(st.Trim() + "\n");
+                    }
+                    Init.output.WriteEndElement();
+                }
+            }
+            Init.output.WriteEndElement();
         }
         /// <summary>
         /// Генерирует скрипты создания хранимых процедур и пишет их в <code>output</code>

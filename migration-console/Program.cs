@@ -45,14 +45,16 @@ namespace migration
                             Console.Write(RevisionList.GetCurrentRevision().ToString("0000+ ") + "Current revision\n\n");
                             foreach (RevisionInfo info in RevisionList.GetReverseRevisionList())
                             {
-                                Console.Write(info.Id.ToString("0000  ") + "Author: " + info.Author + "\n");
-                                Console.Write(info.GenerateDateTime.ToString("dd MMMM yyyy, hh:mm\n"));
-                                Console.Write("Comment: " + info.Comment + "\n\n");
+                                foreach (string s in info.ToStrings())
+                                {
+                                    Console.WriteLine(s + "\n");
+                                }
+                                Console.WriteLine("\n\n");
                             }
                             Console.ReadKey(true);
                             break;
                         case "--migrate-to":
-                            UpDown.Run(args[1]);
+                            UpDown.Run(int.Parse(args[1]));
                             break;
                         case "--help":
                             migration.Program.PrintHelp();
