@@ -16,12 +16,9 @@ namespace migration
         /// </summary>
         static public void Run(string Comment)
         {
-            // FileName - имя файла, куда будет сохранен XML-документ
-            // settings - настройки форматирования (и не только) вывода
-            // (рассмотрен выше)
-            Config.DeleteVersionDirectory();
+            functions.DeleteVersionDirectory();
             Init.currentRevision = RevisionInfo.GenerateRevisionInfo(Comment);
-            using (Init.output = XmlWriter.Create(Config.GetFileName(Init.currentRevision), Config.XmlSettings()))
+            using (Init.output = XmlWriter.Create(functions.GetFileName(Init.currentRevision), functions.XmlSettings()))
             {
                 // Создание объектов для работы с БД
                 Init.server = new Server(ConfigFile.serverName);
@@ -31,8 +28,8 @@ namespace migration
                 Init.WriteXMLHeader();
 
                 // Инициализируем базу данных на работу с нашей программой
-                Database.InitialDatabase();
-                Database.UpdateVersionDatabase(Init.currentRevision);
+                DatabaseAdapter.IntegrateServiceDataInDatabase();
+                DatabaseAdapter.UpdateVersionDatabase(Init.currentRevision);
 
                 // Сохранение информации о таблицах
                 Init.GenerateTableScriptsWithDependence();

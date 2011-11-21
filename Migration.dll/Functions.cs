@@ -4,10 +4,13 @@ using System.Xml;
 
 namespace migration
 {
-    public static class Config
+    internal static class functions
     {
-        public static string configFileName = @"migration.conf";
-        public static XmlWriterSettings XmlSettings()
+        /// <summary>
+        /// Настройки XML для удобного представления в текстовом редакторе
+        /// </summary>
+        /// <returns>Настройки XML</returns>
+        internal static XmlWriterSettings XmlSettings()
         {
             XmlWriterSettings settings = new XmlWriterSettings();
 
@@ -25,10 +28,10 @@ namespace migration
             return settings;
         }
         /// <summary>
-        /// 
+        /// Получить имя файла для сохранения ревизии на основе информации о ней
         /// </summary>
-        /// <param name="Comment"></param>
-        /// <returns></returns>
+        /// <param name="info">Информация о ревизии</param>
+        /// <returns>Имя файла ревизии</returns>
         internal static string GetFileName(RevisionInfo info)
         {
             if (ConfigFile.isLoad)
@@ -41,7 +44,7 @@ namespace migration
                 throw new Exception("Не найден файл конфигурации");
         }
         /// <summary>
-        /// 
+        /// Уничтожение файлов версий и каталога их хранения
         /// </summary>
         internal static void DeleteVersionDirectory()
         {
@@ -52,6 +55,26 @@ namespace migration
             }
             else
                 throw new Exception("Не найден файл конфигурации");
+        }
+        /// <summary>
+        /// Загружает содержимое файла в одну строку
+        /// </summary>
+        /// <param name="fileName">Имя файла, содержимое которого надо загрузить</param>
+        /// <returns>Содержимое файла, преобразованное в одну строку через пробел</returns>
+        internal static string LoadFileToStringCollection(string fileName)
+        {
+            string retStr = "";
+
+            using (TextReader reader = File.OpenText(fileName))
+            {
+                string s = "";
+                do
+                {
+                    s = reader.ReadLine();
+                    if (s != null) if (s.Trim() != "") retStr += s.Trim() + " ";
+                } while (s != null);
+            }
+            return retStr;
         }
     }
 }

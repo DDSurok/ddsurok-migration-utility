@@ -5,11 +5,15 @@ namespace migration
 {
     static public class ConfigFile
     {
+        private static readonly string configFileName = @"migration.conf";
+        /// <summary>
+        /// Загрузка настроек из файла
+        /// </summary>
         static public void Load()
         {
             try
             {
-                using (XmlReader reader = XmlReader.Create(Config.configFileName))
+                using (XmlReader reader = XmlReader.Create(ConfigFile.configFileName))
                 {
                     while (reader.Read())
                     {
@@ -47,7 +51,7 @@ namespace migration
                 }
                 if ((ConfigFile.serverName.Trim() == "") || (ConfigFile.databaseName.Trim() == ""))
                 {
-                    File.Delete("migration.conf");
+                    File.Delete(ConfigFile.configFileName);
                     throw new System.ArgumentException("Ошибочный файл настроек программы.\nПерезапустите генератор файла конфигурации.");
                 }
                 ConfigFile.isLoad = true;
@@ -57,6 +61,12 @@ namespace migration
                 ConfigFile.isLoad = false;
             }
         }
+        /// <summary>
+        /// Изменение настроек (без смены имени базы данных)
+        /// </summary>
+        /// <param name="_Server">Имя сервера</param>
+        /// <param name="_VersionDirectory">Путь к каталогу версий</param>
+        /// <param name="_NickName">Имя пользователя</param>
         static public void Write(string _Server, string _VersionDirectory, string _NickName)
         {
             ConfigFile.serverName = _Server;
@@ -64,17 +74,25 @@ namespace migration
             ConfigFile.nickName = _NickName;
             ConfigFile.WriteData();
         }
+        /// <summary>
+        /// Изменение настроек (включая смену имени базы данных)
+        /// </summary>
+        /// <param name="_Server">Имя сервера</param>
+        /// <param name="_Database"></param>
+        /// <param name="_VersionDirectory">Путь к каталогу версий</param>
+        /// <param name="_NickName">Имя пользователя</param>
         static public void Rewrite(string _Server, string _Database, string _VersionDirectory, string _NickName)
         {
-            ConfigFile.serverName = _Server;
+            ConfigFile.Write(_Server, _VersionDirectory, _NickName);
             ConfigFile.databaseName = _Database;
-            ConfigFile.versionDirectory = _VersionDirectory;
-            ConfigFile.nickName = _NickName;
             ConfigFile.WriteData();
         }
+        /// <summary>
+        /// Выгрузка данных в файл
+        /// </summary>
         static private void WriteData()
         {
-            using (XmlWriter output = XmlWriter.Create(Config.configFileName, Config.XmlSettings()))
+            using (XmlWriter output = XmlWriter.Create(ConfigFile.configFileName, functions.XmlSettings()))
             {
                 // Создали открывающийся тег
                 output.WriteStartElement("MigrationConfigure");

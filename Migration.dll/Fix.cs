@@ -10,20 +10,20 @@ namespace migration
         private static XmlWriter output;
         public static void Run(string Comment)
         {
-            if (Database.GetCountChanges() > 0)    // Если изменения есть, то начинаем
+            if (DatabaseAdapter.GetCountChanges() > 0)    // Если изменения есть, то начинаем
             {
                 Fix.currentRevision = RevisionInfo.GenerateRevisionInfo(Comment);
-                FileStream fs = new FileStream(Config.GetFileName(Fix.currentRevision), FileMode.Append);
-                output = XmlWriter.Create(fs, Config.XmlSettings());
+                FileStream fs = new FileStream(functions.GetFileName(Fix.currentRevision), FileMode.Append);
+                output = XmlWriter.Create(fs, functions.XmlSettings());
                 // Записываем в файл заголовок коммита
                 WriteXMLHeader();
                 // Пишем скрипты повышения
-                Database.WriteScriptsUp(Fix.output);
+                DatabaseAdapter.WriteScriptsUp(Fix.output);
                 // Пишем скрипты понижения
-                Database.WriteScriptsDown(Fix.output);
+                DatabaseAdapter.WriteScriptsDown(Fix.output);
                 // Чистим список изменений и обновляем версию СУБД
-                Database.ClearUpDownScripts();
-                Database.UpdateVersionDatabase(Fix.currentRevision);
+                DatabaseAdapter.ClearUpDownScripts();
+                DatabaseAdapter.UpdateVersionDatabase(Fix.currentRevision);
                 // Пишем подвал коммита
                 WriteXMLSuffix();
                 output.Close();
