@@ -59,7 +59,7 @@
     <Compile Include="Fix.cs" />
     <Compile Include="ConfigFile.cs" />
     <Compile Include="Functions.cs" />
-    <Compile Include="Forgot.cs" />
+    <Compile Include="Migration --facade--.cs" />
     <Compile Include="Init.cs" />
     <Compile Include="Database --Init.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

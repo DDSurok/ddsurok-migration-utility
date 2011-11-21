@@ -29,17 +29,17 @@ namespace migration
                                 if (ch.ToString().ToUpper() == "Y")
                                 {
                                     Console.WriteLine("\n\n");
-                                    Init.Run(args[1]);
+                                    Migration.Init(args[1]);
                                 }
                             }
                             else
                                 throw new System.Exception("Укажите комментарий");
                             break;
                         case "--fix":
-                            Fix.Run(args[1]);
+                            Migration.Fix(args[1]);
                             break;
                         case "--forgot":
-                            Forgot.Run();
+                            Migration.Forgot();
                             break;
                         case "--list":
                             Console.Write(RevisionList.GetCurrentRevision().ToString("0000+ ") + "Current revision\n\n");

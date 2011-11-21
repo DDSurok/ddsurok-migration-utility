@@ -72,7 +72,7 @@ namespace migration
             ConfigFile.serverName = _Server;
             ConfigFile.versionDirectory = _VersionDirectory;
             ConfigFile.nickName = _NickName;
-            ConfigFile.WriteData();
+            ConfigFile.SaveData();
         }
         /// <summary>
         /// Изменение настроек (включая смену имени базы данных)
@@ -81,37 +81,31 @@ namespace migration
         /// <param name="_Database"></param>
         /// <param name="_VersionDirectory">Путь к каталогу версий</param>
         /// <param name="_NickName">Имя пользователя</param>
-        static public void Rewrite(string _Server, string _Database, string _VersionDirectory, string _NickName)
+        static public void Write(string _Server, string _Database, string _VersionDirectory, string _NickName)
         {
             ConfigFile.Write(_Server, _VersionDirectory, _NickName);
             ConfigFile.databaseName = _Database;
-            ConfigFile.WriteData();
+            ConfigFile.SaveData();
         }
         /// <summary>
         /// Выгрузка данных в файл
         /// </summary>
-        static private void WriteData()
+        static private void SaveData()
         {
             using (XmlWriter output = XmlWriter.Create(ConfigFile.configFileName, functions.XmlSettings()))
             {
                 // Создали открывающийся тег
                 output.WriteStartElement("MigrationConfigure");
-
                 // Создаем элемент connectionString
                 output.WriteElementString("serverName", ConfigFile.serverName);
-
                 // Создаем элемент databaseName
                 output.WriteElementString("databaseName", ConfigFile.databaseName);
-
                 // Создаем элемент versionDirectory
                 output.WriteElementString("versionDirectory", ConfigFile.versionDirectory);
-
                 // Создаем элемент nickName
                 output.WriteElementString("nickName", ConfigFile.nickName);
-
                 // Сбрасываем буфферизированные данные
                 output.Flush();
-
                 // Закрываем фаил, с которым связан output
                 output.Close();
             }

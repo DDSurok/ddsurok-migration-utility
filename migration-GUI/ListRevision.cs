@@ -98,7 +98,7 @@ namespace migration
             {
                 EnterComment form = new EnterComment(this);
                 form.ShowDialog();
-                Init.Run(this.ActiveComment);
+                Migration.Init(this.ActiveComment);
                 this.ReloadListOfRevisions();
             }
         }

@@ -4,26 +4,26 @@ using System.Xml;
 
 namespace migration
 {
-    public static class Fix
+    public static class cFix
     {
-        private static RevisionInfo currentRevision;
-        private static XmlWriter output;
-        public static void Run(string Comment)
+        static private RevisionInfo currentRevision;
+        static private XmlWriter output;
+        static internal void _Main(string Comment)
         {
             if (DatabaseAdapter.GetCountChanges() > 0)    // Если изменения есть, то начинаем
             {
-                Fix.currentRevision = RevisionInfo.GenerateRevisionInfo(Comment);
-                FileStream fs = new FileStream(functions.GetFileName(Fix.currentRevision), FileMode.Append);
+                cFix.currentRevision = RevisionInfo.GenerateRevisionInfo(Comment);
+                FileStream fs = new FileStream(functions.GetFileName(cFix.currentRevision), FileMode.Append);
                 output = XmlWriter.Create(fs, functions.XmlSettings());
                 // Записываем в файл заголовок коммита
                 WriteXMLHeader();
                 // Пишем скрипты повышения
-                DatabaseAdapter.WriteScriptsUp(Fix.output);
+                cFix.WriteScriptsUp();
                 // Пишем скрипты понижения
-                DatabaseAdapter.WriteScriptsDown(Fix.output);
+                cFix.WriteScriptsDown();
                 // Чистим список изменений и обновляем версию СУБД
                 DatabaseAdapter.ClearUpDownScripts();
-                DatabaseAdapter.UpdateVersionDatabase(Fix.currentRevision);
+                DatabaseAdapter.UpdateVersionDatabase(cFix.currentRevision);
                 // Пишем подвал коммита
                 WriteXMLSuffix();
                 output.Close();
@@ -34,25 +34,54 @@ namespace migration
         /// Запись заголовка записи в XML
         /// </summary>
         /// <param name="output">XML, куда пишется запись</param>
-        private static void WriteXMLHeader()
+        static private void WriteXMLHeader()
         {
-            Fix.output.WriteStartElement("Revision");
-            Fix.output.WriteAttributeString("Database", ConfigFile.databaseName);
-            Fix.output.WriteAttributeString("Create_date", Fix.currentRevision.GenerateDateTime.ToShortDateString());
-            Fix.output.WriteAttributeString("Create_time", Fix.currentRevision.GenerateDateTime.ToShortTimeString());
-            Fix.output.WriteAttributeString("Id", Fix.currentRevision.HashCode);
-            Fix.output.WriteStartElement("Comment");
-            Fix.output.WriteString(Fix.currentRevision.Comment);
-            Fix.output.WriteEndElement();
+            cFix.output.WriteStartElement("Revision");
+            cFix.output.WriteAttributeString("Database", ConfigFile.databaseName);
+            cFix.output.WriteAttributeString("Create_date", cFix.currentRevision.GenerateDateTime.ToShortDateString());
+            cFix.output.WriteAttributeString("Create_time", cFix.currentRevision.GenerateDateTime.ToShortTimeString());
+            cFix.output.WriteAttributeString("Id", cFix.currentRevision.HashCode);
+            cFix.output.WriteStartElement("Comment");
+            cFix.output.WriteString(cFix.currentRevision.Comment);
+            cFix.output.WriteEndElement();
+        }
+        /// <summary>
+        /// Записываем в XML скрипты повышения
+        /// </summary>
+        /// <param name="output">XML, куда записываются скрипты</param>
+        static public void WriteScriptsUp()
+        {
+            cFix.output.WriteStartElement("UpScripts");
+            int i = 1;
+            foreach (string script in DatabaseAdapter.GetUpScripts())
+            {
+                cFix.output.WriteElementString(i.ToString("up00000000"), script);
+                i++;
+            }
+            cFix.output.WriteEndElement();
+        }
+        /// <summary>
+        /// Записываем в XML скрипты понижения
+        /// </summary>
+        /// <param name="output">XML, куда записываются скрипты</param>
+        static public void WriteScriptsDown()
+        {
+            cFix.output.WriteStartElement("DownScripts");
+            int i = 1;
+            foreach (string script in DatabaseAdapter.GetDownScripts())
+            {
+                cFix.output.WriteElementString(i.ToString("down00000000"), script);
+            }
+            cFix.output.WriteEndElement();
         }
         /// <summary>
         /// Запись подвала записи в XML
         /// </summary>
         /// <param name="output"></param>
-        private static void WriteXMLSuffix()
+        static private void WriteXMLSuffix()
         {
-            Fix.output.WriteEndElement(); // "Revision"
-            Fix.output.WriteEndDocument();
+            cFix.output.WriteEndElement(); // "Revision"
+            cFix.output.WriteEndDocument();
         }
     }
 }

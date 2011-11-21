@@ -90,7 +90,7 @@ namespace migration
             this.SaveUpdate();
             EnterComment form = new EnterComment(this);
             form.ShowDialog();
-            Fix.Run(this.ActiveComment);
+            Migration.Fix(this.ActiveComment);
             this.Close();
         }
     }

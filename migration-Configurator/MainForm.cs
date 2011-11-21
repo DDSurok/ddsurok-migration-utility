@@ -78,7 +78,7 @@ namespace migration
             else
             {
                 // Файл конфигурации не существовал
-                ConfigFile.Rewrite(this.ServerComboBox.SelectedItem.ToString(), this.DatabaseComboBox.SelectedItem.ToString(), this.Directory.Text, this.NickName.Text);
+                ConfigFile.Write(this.ServerComboBox.SelectedItem.ToString(), this.DatabaseComboBox.SelectedItem.ToString(), this.Directory.Text, this.NickName.Text);
             }
         }
         

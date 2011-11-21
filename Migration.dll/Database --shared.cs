@@ -7,12 +7,12 @@ namespace migration
 {
     internal static partial class DatabaseAdapter
     {
-        public static bool IsExists { get; set; }
+        internal static bool IsExists { get; private set; }
         private static SqlConnection connection { get; set; }
         /// <summary>
-        /// Стартовая инициализация программы на сервер и БД
+        /// Инициализация компонентов программы для работы с сервером и БД
         /// </summary>
-        public static void Initial()
+        internal static void Initial()
         {
             DatabaseAdapter.connection = new SqlConnection("Data Source=" + ConfigFile.serverName + ";Integrated Security=True");
             DatabaseAdapter.connection.Open();
@@ -30,7 +30,7 @@ namespace migration
         /// Обновить информацию о версии ревизии базы данных
         /// </summary>
         /// <param name="revision">Данные о ревизии</param>
-        public static void UpdateVersionDatabase(RevisionInfo revision)
+        internal static void UpdateVersionDatabase(RevisionInfo revision)
         {
             SqlCommand command = connection.CreateCommand();
             command.CommandText = "insert into [dds].[version] (hashCode, generateDateTime, nickName, comment) VALUES ('"
@@ -43,7 +43,7 @@ namespace migration
         /// <summary>
         /// Очистка таблиц dds.up, dds.down и dds.version от данных
         /// </summary>
-        public static void ClearUpDownScripts()
+        internal static void ClearUpDownScripts()
         {
             SqlCommand command = DatabaseAdapter.connection.CreateCommand();
             command.CommandText = "TRUNCATE TABLE [dds].[up]";

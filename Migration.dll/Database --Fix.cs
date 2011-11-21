@@ -1,43 +1,44 @@
 ﻿using System.Data.SqlClient;
 using System.Xml;
+using System.Collections.Generic;
 
 namespace migration
 {
     internal static partial class DatabaseAdapter
     {
         /// <summary>
-        /// Записываем в XML скрипты повышения
+        /// Получить из базы данных скрипты повышения
         /// </summary>
-        /// <param name="output">XML, куда записываются скрипты</param>
-        public static void WriteScriptsUp(XmlWriter output)
+        /// <returns>Список скриптов повышения</returns>
+        public static List<string> GetUpScripts()
         {
-            output.WriteStartElement("UpScripts");
             SqlCommand command = DatabaseAdapter.connection.CreateCommand();
-            command.CommandText = "SELECT [dds].[up].[id] AS [id], [dds].[up].[script] AS [script] FROM [dds].[up] ORDER BY [dds].[up].[id] ASC";
+            command.CommandText = "SELECT [dds].[up].[script] AS [script] FROM [dds].[up] ORDER BY [dds].[up].[id] ASC";
             SqlDataReader reader = command.ExecuteReader();
+            List<string> ret = new List<string>();
             while (reader.Read())
             {
-                output.WriteElementString(int.Parse(reader["id"].ToString()).ToString("up00000000"), reader["script"].ToString());
+                ret.Add(reader["script"].ToString());
             }
-            output.WriteEndElement();
             reader.Close();
+            return ret;
         }
         /// <summary>
-        /// Записываем с XML скрипты понижения
+        /// Получить из базы данных скрипты понижения
         /// </summary>
-        /// <param name="output">XML, куда записываются скрипты</param>
-        public static void WriteScriptsDown(XmlWriter output)
+        /// <returns>Список скриптов понижения</returns>
+        public static List<string> GetDownScripts()
         {
-            output.WriteStartElement("DownScripts");
             SqlCommand command = DatabaseAdapter.connection.CreateCommand();
-            command.CommandText = "SELECT [dds].[down].[id] AS [id], [dds].[down].[script] AS [script] FROM [dds].[down] ORDER BY [dds].[down].[id] DESC";
+            command.CommandText = "SELECT [dds].[down].[script] AS [script] FROM [dds].[down] ORDER BY [dds].[down].[id] DESC";
             SqlDataReader reader = command.ExecuteReader();
+            List<string> ret = new List<string>();
             while (reader.Read())
             {
-                output.WriteElementString(int.Parse(reader["id"].ToString()).ToString("down00000000"), reader["script"].ToString());
+                ret.Add(reader["script"].ToString());
             }
-            output.WriteEndElement();
             reader.Close();
+            return ret;
         }
         /// <summary>
         /// Получить количество изменений в базе

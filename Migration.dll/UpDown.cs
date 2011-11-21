@@ -13,10 +13,7 @@ namespace migration
         public static void Run(int Version)
         {
             int CurrentVersion = RevisionList.GetCurrentRevision();
-            if (Version == CurrentVersion)
-            {
-                // Отбрасывание изменений
-            }
+
             if (CurrentVersion > Version)       // Понижение версии
             {
                 List<RevisionInfo> list = RevisionList.GetRevisionList().GetRange(Version + 1, CurrentVersion - Version);
@@ -25,7 +22,7 @@ namespace migration
                 {
                     UpDown.ApplyScripts(info.GetDownScripts());
                 }
-
+                DatabaseAdapter.UpdateVersionDatabase(RevisionList.GetRevisionList()[Version]);
             }
             else                                // Повышение версии
             {
