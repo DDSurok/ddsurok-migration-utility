@@ -54,7 +54,7 @@ namespace migration
                             Console.ReadKey(true);
                             break;
                         case "--migrate-to":
-                            UpDown.Run(int.Parse(args[1]));
+                            Migration.Migrate(int.Parse(args[1]));
                             break;
                         case "--help":
                             migration.Program.PrintHelp();

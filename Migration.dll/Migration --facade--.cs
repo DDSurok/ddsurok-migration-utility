@@ -38,5 +38,10 @@ namespace migration
         {
             cFix._Main(Comment);
         }
+
+        public static void Migrate(int Version)
+        {
+            UpDown._Main(Version);
+        }
     }
 }

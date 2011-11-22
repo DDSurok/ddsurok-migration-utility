@@ -75,7 +75,7 @@ namespace migration
             InitializeComponent();
             try
             {
-                ConfigFile.Load();
+                ConfigFile.Load(); // TODO: В дальнейшем - удалить
             }
             catch (Exception ex)
             {
@@ -85,7 +85,7 @@ namespace migration
 
         private void ListRevision_Shown(object sender, EventArgs e)
         {
-            ReloadListOfRevisions();
+            this.ReloadListOfRevisions();
         }
 
         private void btnInit_Click(object sender, EventArgs e)
@@ -108,7 +108,7 @@ namespace migration
             using (ShowDiff form = new ShowDiff())
             {
                 form.ShowDialog();
-                ReloadListOfRevisions();
+                this.ReloadListOfRevisions();
             }
         }
 
@@ -116,7 +116,8 @@ namespace migration
         {
             if (this.Revisions.SelectedIndex != -1)
             {
-                UpDown.Run(this.revisionList[this.Revisions.SelectedIndex].Id);
+                Migration.Migrate(this.revisionList[this.Revisions.SelectedIndex].Id);
+                this.ReloadListOfRevisions();
             }
         }
     }

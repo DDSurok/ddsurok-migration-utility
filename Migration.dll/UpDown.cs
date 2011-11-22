@@ -6,27 +6,29 @@ namespace migration
 {
     public static class UpDown
     {
+        private static int CurrentVersion;
+        private static int DestinationVersion;
         /// <summary>
         /// Предоставляет доступ к основному механизму класса
         /// </summary>
         /// <param name="Version">Номер версии-результата миграции</param>
-        public static void Run(int Version)
+        internal static void _Main(int Version)
         {
-            int CurrentVersion = RevisionList.GetCurrentRevision();
+            UpDown.DestinationVersion = Version;
+            UpDown.CurrentVersion = RevisionList.GetCurrentRevision();
 
-            if (CurrentVersion > Version)       // Понижение версии
+            if (UpDown.CurrentVersion > UpDown.DestinationVersion)       // Понижение версии
             {
-                List<RevisionInfo> list = RevisionList.GetRevisionList().GetRange(Version + 1, CurrentVersion - Version);
+                List<RevisionInfo> list = RevisionList.GetRevisionList().GetRange(UpDown.DestinationVersion + 1, UpDown.CurrentVersion - UpDown.DestinationVersion);
                 list.Reverse();
                 foreach (RevisionInfo info in list)
                 {
                     UpDown.ApplyScripts(info.GetDownScripts());
                 }
-                DatabaseAdapter.UpdateVersionDatabase(RevisionList.GetRevisionList()[Version]);
             }
             else                                // Повышение версии
             {
-                foreach (RevisionInfo info in RevisionList.GetRevisionList().GetRange(CurrentVersion + 1, Version - CurrentVersion))
+                foreach (RevisionInfo info in RevisionList.GetRevisionList().GetRange(UpDown.CurrentVersion + 1, UpDown.DestinationVersion - UpDown.CurrentVersion))
                 {
                     UpDown.ApplyScripts(info.GetUpScripts());
                 }
@@ -44,6 +46,7 @@ namespace migration
                 connection.ChangeDatabase(ConfigFile.databaseName);
                 SqlTransaction tran = connection.BeginTransaction();
                 SqlCommand command = connection.CreateCommand();
+                command.Transaction = tran;
                 try
                 {
                     foreach (string query in list)
@@ -52,10 +55,14 @@ namespace migration
                         command.ExecuteNonQuery();
                     }
                     tran.Commit();
+                    
+                    DatabaseAdapter.UpdateVersionDatabase(RevisionList.GetRevisionList()[UpDown.DestinationVersion]);
                 }
                 catch (Exception)
                 {
                     tran.Rollback();
+                    
+                    DatabaseAdapter.UpdateVersionDatabase(RevisionList.GetRevisionList()[UpDown.CurrentVersion]);
                 }
 
             }

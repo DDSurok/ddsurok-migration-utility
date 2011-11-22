@@ -118,16 +118,11 @@ namespace migration
                     switch (reader.NodeType)
                     {
                         case XmlNodeType.Element:
-                            switch (reader.Name)
+                            switch (reader.Name.Substring(0, 2))
                             {
-                                case "UpScripts":
+                                case "up":
                                     reader.Read();
-                                    while (reader.Name != "DownScripts")
-                                    {
-                                        reader.Read();
-                                        ret.Add(reader.Value);
-                                        reader.Read();
-                                    }
+                                    ret.Add(reader.Value);
                                     break;
                             }
                             break;
@@ -162,17 +157,11 @@ namespace migration
                     switch (reader.NodeType)
                     {
                         case XmlNodeType.Element:
-                            switch (reader.Name)
+                            switch (reader.Name.Substring(0, 4))
                             {
-                                case "DownScripts":
+                                case "down":
                                     reader.Read();
-                                    while (reader.Name != "DownScripts")
-                                    {
-                                        reader.Read();
-                                        ret.Add(reader.Value);
-                                        if (reader.Read())
-                                            break;
-                                    }
+                                    ret.Add(reader.Value);
                                     break;
                             }
                             break;
@@ -186,7 +175,6 @@ namespace migration
                     }
                 }
             }
-            ret.Reverse();
             return ret;
         }
         /// <summary>
@@ -200,7 +188,14 @@ namespace migration
                     this.GenerateDateTime.ToString("dd MMMM yyyy, hh:mm\t") +
                     "Comment: " + this.Comment.Replace("\n", " \t");
         }
-
+        /// <summary>
+        /// Преобразовать информацию о ревизии в три строки.
+        /// Данные хранятся в следующем виде:
+        /// 1 строка -- Номер ревизии и автор
+        /// 2 строка -- Дата и время создания
+        /// 3 строка -- Комментарий к ревизии
+        /// </summary>
+        /// <returns>Строки с информацией</returns>
         public string[] ToStrings()
         {
             string[] ret = new string[3];

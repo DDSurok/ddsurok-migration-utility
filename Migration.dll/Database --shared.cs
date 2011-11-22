@@ -33,6 +33,8 @@ namespace migration
         internal static void UpdateVersionDatabase(RevisionInfo revision)
         {
             SqlCommand command = connection.CreateCommand();
+            command.CommandText = "TRUNCATE TABLE [dds].[version]";
+            command.ExecuteNonQuery();
             command.CommandText = "insert into [dds].[version] (hashCode, generateDateTime, nickName, comment) VALUES ('"
                                     + revision.HashCode + "','"
                                     + revision.GenerateDateTime.ToString("dd.MM.yyyy:hh.mm") + "','"
@@ -41,7 +43,7 @@ namespace migration
             command.ExecuteNonQuery();
         }
         /// <summary>
-        /// Очистка таблиц dds.up, dds.down и dds.version от данных
+        /// Очистка таблиц dds.up, dds.down от данных
         /// </summary>
         internal static void ClearUpDownScripts()
         {
@@ -49,8 +51,6 @@ namespace migration
             command.CommandText = "TRUNCATE TABLE [dds].[up]";
             command.ExecuteNonQuery();
             command.CommandText = "TRUNCATE TABLE [dds].[down];";
-            command.ExecuteNonQuery();
-            command.CommandText = "TRUNCATE TABLE [dds].[version];";
             command.ExecuteNonQuery();
         }
     }
