@@ -1,13 +1,22 @@
-﻿using System.Data.SqlClient;
-using System.IO;
+﻿using System.IO;
 using System.Xml;
 
 namespace migration
 {
     public static class cFix
     {
+        /// <summary>
+        /// Хранит информацию о текущей ревизии базы данных.
+        /// </summary>
         static private RevisionInfo currentRevision;
+        /// <summary>
+        /// Класс доступа к файлу новой ревизии.
+        /// </summary>
         static private XmlWriter output;
+        /// <summary>
+        /// Основной метод класса. Выполняет фиксацию изменений в новую ревизию.
+        /// </summary>
+        /// <param name="Comment">Комментарий новой ревизии</param>
         static internal void _Main(string Comment)
         {
             if (DatabaseAdapter.GetCountChanges() > 0)    // Если изменения есть, то начинаем
@@ -31,13 +40,12 @@ namespace migration
             }
         }
         /// <summary>
-        /// Запись заголовка записи в XML
+        /// Запись заголовка записи в XML.
         /// </summary>
-        /// <param name="output">XML, куда пишется запись</param>
         static private void WriteXMLHeader()
         {
             cFix.output.WriteStartElement("Revision");
-            cFix.output.WriteAttributeString("Database", ConfigFile.databaseName);
+            cFix.output.WriteAttributeString("Database", Configuration.databaseName);
             cFix.output.WriteAttributeString("Create_date", cFix.currentRevision.GenerateDateTime.ToShortDateString());
             cFix.output.WriteAttributeString("Create_time", cFix.currentRevision.GenerateDateTime.ToShortTimeString());
             cFix.output.WriteAttributeString("Id", cFix.currentRevision.HashCode);
@@ -46,9 +54,8 @@ namespace migration
             cFix.output.WriteEndElement();
         }
         /// <summary>
-        /// Записываем в XML скрипты повышения
+        /// Записываем в XML скрипты повышения.
         /// </summary>
-        /// <param name="output">XML, куда записываются скрипты</param>
         static public void WriteScriptsUp()
         {
             cFix.output.WriteStartElement("UpScripts");
@@ -61,9 +68,8 @@ namespace migration
             cFix.output.WriteEndElement();
         }
         /// <summary>
-        /// Записываем в XML скрипты понижения
+        /// Записываем в XML скрипты понижения.
         /// </summary>
-        /// <param name="output">XML, куда записываются скрипты</param>
         static public void WriteScriptsDown()
         {
             cFix.output.WriteStartElement("DownScripts");
@@ -75,9 +81,8 @@ namespace migration
             cFix.output.WriteEndElement();
         }
         /// <summary>
-        /// Запись подвала записи в XML
+        /// Запись подвала записи в XML.
         /// </summary>
-        /// <param name="output"></param>
         static private void WriteXMLSuffix()
         {
             cFix.output.WriteEndElement(); // "Revision"

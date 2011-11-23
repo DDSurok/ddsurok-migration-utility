@@ -7,13 +7,26 @@ namespace migration
 {
     static public class cInit
     {
-        static private XmlWriter output;
-        static private Microsoft.SqlServer.Management.Smo.Database database;
-        static private Server server;
+        /// <summary>
+        /// Хранит информацию о текущей ревизии базы данных.
+        /// </summary>
         static private RevisionInfo currentRevision;
         /// <summary>
-        /// Основной метод класса
+        /// Класс доступа к файлу новой ревизии.
         /// </summary>
+        static private XmlWriter output;
+        /// <summary>
+        /// Класс доступа к серверу посредством SMO.
+        /// </summary>
+        static private Server server;
+        /// <summary>
+        /// Класс доступа к базе данных посредством SMO.
+        /// </summary>
+        static private Database database;
+        /// <summary>
+        /// Основной метод класса. Выполняет создание базовой ревизии.
+        /// </summary>
+        /// <param name="Comment">Комментарий новой ревизии</param>
         static internal void _Main(string Comment)
         {
             functions.DeleteVersionDirectory();
@@ -21,8 +34,8 @@ namespace migration
             using (cInit.output = XmlWriter.Create(functions.GetFileName(cInit.currentRevision), functions.XmlSettings()))
             {
                 // Создание объектов для работы с БД
-                cInit.server = new Server(ConfigFile.serverName);
-                cInit.database = server.Databases[ConfigFile.databaseName];
+                cInit.server = new Server(Configuration.serverName);
+                cInit.database = server.Databases[Configuration.databaseName];
                     
                 // Пишем информацию в XML о типе записи
                 cInit.WriteXMLHeader();
@@ -55,13 +68,13 @@ namespace migration
             }
         }
         /// <summary>
-        /// Записываем заголовок файла версий
+        /// Записываем заголовок файла версий.
         /// </summary>
         private static void WriteXMLHeader()
         {
             cInit.output.WriteStartDocument();
             cInit.output.WriteStartElement("Revision");
-            cInit.output.WriteAttributeString("Database", ConfigFile.databaseName);
+            cInit.output.WriteAttributeString("Database", Configuration.databaseName);
             cInit.output.WriteAttributeString("Create_date", cInit.currentRevision.GenerateDateTime.ToShortDateString());
             cInit.output.WriteAttributeString("Create_time", cInit.currentRevision.GenerateDateTime.ToShortTimeString());
             cInit.output.WriteAttributeString("Id", cInit.currentRevision.HashCode);
@@ -71,18 +84,18 @@ namespace migration
             cInit.output.WriteStartElement("UpScripts");
             cInit.output.WriteStartElement("IfExistsDatabase");
             cInit.output.WriteString("\n");
-            cInit.output.WriteString("IF  EXISTS (SELECT name FROM sys.databases WHERE name = N'" + ConfigFile.databaseName + "')\n");
-            cInit.output.WriteString("DROP DATABASE " + ConfigFile.databaseName + "\n");
+            cInit.output.WriteString("IF  EXISTS (SELECT name FROM sys.databases WHERE name = N'" + Configuration.databaseName + "')\n");
+            cInit.output.WriteString("DROP DATABASE " + Configuration.databaseName + "\n");
             cInit.output.WriteString("GO\n");
             cInit.output.WriteEndElement(); // "IfExistsDatabase"
             cInit.output.WriteStartElement("CreateDatabase");
             cInit.output.WriteString("\n");
-            cInit.output.WriteString("CREATE DATABASE " + ConfigFile.databaseName + "\n");
+            cInit.output.WriteString("CREATE DATABASE " + Configuration.databaseName + "\n");
             cInit.output.WriteString("GO\n");
             cInit.output.WriteEndElement(); // "CreateDatabase"
         }
         /// <summary>
-        /// Записываем подвал файла версий
+        /// Записываем подвал файла версий.
         /// </summary>
         private static void WriteXMLSuffix()
         {
@@ -93,7 +106,7 @@ namespace migration
             cInit.output.WriteEndDocument();
         }
         /// <summary>
-        /// Генерирует скрипты создания таблиц со всеми зависимостями и пишет их в <code>output</code>
+        /// Генерирует скрипты создания таблиц со всеми зависимостями и пишет их в <code>output</code>.
         /// </summary>
         private static void GenerateTableScriptsWithDependence()
         {
@@ -124,7 +137,7 @@ namespace migration
             cInit.output.WriteEndElement();
         }
         /// <summary>
-        /// Генерирует скрипты создания хранимых процедур и пишет их в <code>output</code>
+        /// Генерирует скрипты создания хранимых процедур и пишет их в <code>output</code>.
         /// </summary>
         private static void GenerateStoredProcScripts()
         {
@@ -159,7 +172,7 @@ namespace migration
             cInit.output.WriteEndElement();
         }
         /// <summary>
-        /// Генерирует скрипты создания ролей и пишет их в <code>output</code>
+        /// Генерирует скрипты создания ролей и пишет их в <code>output</code>.
         /// </summary>
         private static void GenerateRoleScripts()
         {
@@ -188,7 +201,7 @@ namespace migration
             cInit.output.WriteEndElement();
         }
         /// <summary>
-        /// Генерирует скрипты создания правил и пишет их в <code>output</code>
+        /// Генерирует скрипты создания правил и пишет их в <code>output</code>.
         /// </summary>
         private static void GenerateRuleScripts()
         {
@@ -220,7 +233,7 @@ namespace migration
             output.WriteEndElement();
         }
         /// <summary>
-        /// Генерирует скрипты создания таблиц и пишет их в <code>output</code>
+        /// Генерирует скрипты создания таблиц и пишет их в <code>output</code>.
         /// </summary>
         private static void GenerateTableScripts()
         {
@@ -252,7 +265,7 @@ namespace migration
             cInit.output.WriteEndElement();
         }
         /// <summary>
-        /// Генерирует скрипты создания триггеров и пишет их в <code>output</code>
+        /// Генерирует скрипты создания триггеров и пишет их в <code>output</code>.
         /// </summary>
         private static void GenerateTriggerScripts()
         {
@@ -286,7 +299,7 @@ namespace migration
             cInit.output.WriteEndElement();
         }
         /// <summary>
-        /// Генерирует скрипты создания проверок и пишет их в <code>output</code>
+        /// Генерирует скрипты создания проверок и пишет их в <code>output</code>.
         /// </summary>
         private static void GenerateCheckScripts()
         {
@@ -320,7 +333,7 @@ namespace migration
             cInit.output.WriteEndElement();
         }
         /// <summary>
-        /// Генерирует скрипты создания внешних ключей и пишет их в <code>output</code>
+        /// Генерирует скрипты создания внешних ключей и пишет их в <code>output</code>.
         /// </summary>
         private static void GenerateForeignKeyScripts()
         {
@@ -354,7 +367,7 @@ namespace migration
             cInit.output.WriteEndElement();
         }
         /// <summary>
-        /// Генерирует скрипты создания индексов и пишет их в <code>output</code>
+        /// Генерирует скрипты создания индексов и пишет их в <code>output</code>.
         /// </summary>
         private static void GenerateIndexScripts()
         {

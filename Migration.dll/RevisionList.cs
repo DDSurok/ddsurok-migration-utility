@@ -4,24 +4,23 @@ using System.Data.SqlClient;
 using System.IO;
 
 namespace migration
-
 {
     /// <summary>
-    /// Механизмы получения списка версий
+    /// Механизмы получения списка версий.
     /// </summary>
     public static class RevisionList
     {
         /// <summary>
-        /// Получить список всех ревизий
+        /// Получить список всех ревизий.
         /// </summary>
         /// <returns>Список ревизий</returns>
         public static List<RevisionInfo> GetRevisionList()
         {
             List<RevisionInfo> returnList = new List<RevisionInfo>();
             int i = 0;
-            if (Directory.Exists(ConfigFile.versionDirectory))
+            if (Directory.Exists(Configuration.versionDirectory))
             {
-                foreach(string File in Directory.GetFiles(ConfigFile.versionDirectory))
+                foreach(string File in Directory.GetFiles(Configuration.versionDirectory))
                 {
                     RevisionInfo tempInfo = RevisionInfo.GetInfoFromFile(File);
                     tempInfo.Id = i;
@@ -36,16 +35,16 @@ namespace migration
             return returnList;
         }
         /// <summary>
-        /// Получить список всех ревизий в обратном порядке
+        /// Получить список всех ревизий в обратном порядке.
         /// </summary>
         /// <returns>Список ревизий</returns>
         public static List<RevisionInfo> GetReverseRevisionList()
         {
             List<RevisionInfo> returnList = new List<RevisionInfo>();
             int i = 0;
-            if (Directory.Exists(ConfigFile.versionDirectory))
+            if (Directory.Exists(Configuration.versionDirectory))
             {
-                foreach (string File in Directory.GetFiles(ConfigFile.versionDirectory))
+                foreach (string File in Directory.GetFiles(Configuration.versionDirectory))
                 {
                     RevisionInfo tempInfo = RevisionInfo.GetInfoFromFile(File);
                     tempInfo.Id = i;
@@ -67,10 +66,10 @@ namespace migration
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection("Data Source=" + ConfigFile.serverName + ";Integrated Security=True"))
+                using (SqlConnection connection = new SqlConnection("Data Source=" + Configuration.serverName + ";Integrated Security=True"))
                 {
                     connection.Open();
-                    connection.ChangeDatabase(ConfigFile.databaseName);
+                    connection.ChangeDatabase(Configuration.databaseName);
                     SqlCommand command = connection.CreateCommand();
                     command.CommandText = "SELECT [dds].[version].[hashCode] AS hashCode FROM [dds].[version]";
                     SqlDataReader reader = command.ExecuteReader();

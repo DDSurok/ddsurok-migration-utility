@@ -12,14 +12,36 @@ namespace migration
     /// </summary>
     public struct RevisionInfo
     {
+        /// <summary>
+        /// Имя файла ревизии.
+        /// Если равно <code>string.Empty</code>,
+        /// то ревизия еще не сохранена в файл.
+        /// </summary>
         public string FileName { get; set; }
+        /// <summary>
+        /// Дата и время создания ревизии.
+        /// </summary>
         public DateTime GenerateDateTime { get; set; }
+        /// <summary>
+        /// Автор ревизии.
+        /// </summary>
         public string Author { get; set; }
+        /// <summary>
+        /// Комментарий к ревизии.
+        /// </summary>
         public string Comment { get; set; }
+        /// <summary>
+        /// Номер ревизии по порядку.
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// Уникальный хеш-код ревизии.
+        /// Обеспечивает уникальность на основе информации
+        /// о дате и времени, а так же авторе ревизии.
+        /// </summary>
         public string HashCode { get; set; }
         /// <summary>
-        /// Получить информацию о ривизии из файла
+        /// Получить информацию о ривизии из файла.
         /// </summary>
         /// <param name="File">Имя файла</param>
         /// <returns>Данные о ревизии</returns>
@@ -71,7 +93,7 @@ namespace migration
             return tempInfo;
         }
         /// <summary>
-        /// Составление информации по ривизии по текущей дате и времени
+        /// Составление информации по ривизии по текущей дате и времени.
         /// </summary>
         /// <param name="Comment">Коментарий к ревизии</param>
         public static RevisionInfo GenerateRevisionInfo(string Comment)
@@ -86,7 +108,7 @@ namespace migration
                                                         DateTime.Now.Hour,
                                                         DateTime.Now.Minute,
                                                         DateTime.Now.Second);
-            returnValue.Author = ConfigFile.nickName;
+            returnValue.Author = Configuration.nickName;
             returnValue.Comment = Comment;
             SHA1 sha = new SHA1CryptoServiceProvider();
             byte[] byteHash =
@@ -100,7 +122,7 @@ namespace migration
             return returnValue;
         }
         /// <summary>
-        /// Взять скрипты повышения из текущей ревизии
+        /// Взять скрипты повышения из текущей ревизии.
         /// </summary>
         /// <returns>Список скриптов</returns>
         public List<string> GetUpScripts()
@@ -139,7 +161,7 @@ namespace migration
             return ret;
         }
         /// <summary>
-        /// Взять скрипты понижения до текущей ревизии
+        /// Взять скрипты понижения до текущей ревизии.
         /// </summary>
         /// <returns>Список скриптов</returns>
         public List<string> GetDownScripts()
@@ -178,7 +200,7 @@ namespace migration
             return ret;
         }
         /// <summary>
-        /// Преобразовать информацию о ревизии в одну строку
+        /// Преобразовать информацию о ревизии в одну строку.
         /// </summary>
         /// <returns>Строка с информацией о ревизии</returns>
         public override string ToString()
@@ -191,9 +213,9 @@ namespace migration
         /// <summary>
         /// Преобразовать информацию о ревизии в три строки.
         /// Данные хранятся в следующем виде:
-        /// 1 строка -- Номер ревизии и автор
-        /// 2 строка -- Дата и время создания
-        /// 3 строка -- Комментарий к ревизии
+        /// 1 строка -- Номер ревизии и автор;
+        /// 2 строка -- Дата и время создания;
+        /// 3 строка -- Комментарий к ревизии.
         /// </summary>
         /// <returns>Строки с информацией</returns>
         public string[] ToStrings()

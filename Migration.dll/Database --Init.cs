@@ -5,12 +5,12 @@ namespace migration
     internal static partial class DatabaseAdapter
     {
         /// <summary>
-        /// Заполняем базу таблицами необходимыми для работы таблицами и триггерами
+        /// Заполняем базу таблицами необходимыми для работы таблицами и триггерами.
         /// </summary>
-        public static void IntegrateServiceDataInDatabase()
+        internal static void IntegrateServiceDataInDatabase()
         {
             SqlCommand command = connection.CreateCommand();
-            command.CommandText = "ALTER DATABASE [" + ConfigFile.databaseName + "] SET TRUSTWORTHY ON";
+            command.CommandText = "ALTER DATABASE [" + Configuration.databaseName + "] SET TRUSTWORTHY ON";
             command.ExecuteNonQuery();
             DatabaseAdapter.RemoveServiceDataInDatabase();
             command.CommandText = functions.LoadFileToStringCollection("SQL/CreateSchema.sql");
@@ -32,9 +32,9 @@ namespace migration
             command.ExecuteNonQuery();
         }
         /// <summary>
-        /// Очистка базы данных от созданных при инициализации служебных структур
+        /// Очистка базы данных от созданных при инициализации служебных структур.
         /// </summary>
-        public static void RemoveServiceDataInDatabase()
+        internal static void RemoveServiceDataInDatabase()
         {
             SqlCommand command = connection.CreateCommand();
             command.CommandText = functions.LoadFileToStringCollection("SQL/IfExists.sql");

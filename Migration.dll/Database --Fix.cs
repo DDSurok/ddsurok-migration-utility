@@ -10,7 +10,7 @@ namespace migration
         /// Получить из базы данных скрипты повышения
         /// </summary>
         /// <returns>Список скриптов повышения</returns>
-        public static List<string> GetUpScripts()
+        internal static List<string> GetUpScripts()
         {
             SqlCommand command = DatabaseAdapter.connection.CreateCommand();
             command.CommandText = "SELECT [dds].[up].[script] AS [script] FROM [dds].[up] ORDER BY [dds].[up].[id] ASC";
@@ -27,7 +27,7 @@ namespace migration
         /// Получить из базы данных скрипты понижения
         /// </summary>
         /// <returns>Список скриптов понижения</returns>
-        public static List<string> GetDownScripts()
+        internal static List<string> GetDownScripts()
         {
             SqlCommand command = DatabaseAdapter.connection.CreateCommand();
             command.CommandText = "SELECT [dds].[down].[script] AS [script] FROM [dds].[down] ORDER BY [dds].[down].[id] DESC";
@@ -44,7 +44,7 @@ namespace migration
         /// Получить количество изменений в базе
         /// </summary>
         /// <returns>Количество изменений</returns>
-        public static int GetCountChanges()
+        internal static int GetCountChanges()
         {
             SqlCommand command = DatabaseAdapter.connection.CreateCommand();
             command.CommandText = "SELECT COUNT(*) AS [COUNT] FROM [dds].[up]";

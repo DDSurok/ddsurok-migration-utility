@@ -7,7 +7,7 @@ namespace migration
     internal static class functions
     {
         /// <summary>
-        /// Настройки XML для удобного представления в текстовом редакторе
+        /// Настройки XML для удобного представления в текстовом редакторе.
         /// </summary>
         /// <returns>Настройки XML</returns>
         internal static XmlWriterSettings XmlSettings()
@@ -28,36 +28,36 @@ namespace migration
             return settings;
         }
         /// <summary>
-        /// Получить имя файла для сохранения ревизии на основе информации о ней
+        /// Получить имя файла для сохранения ревизии на основе информации о ней.
         /// </summary>
         /// <param name="info">Информация о ревизии</param>
         /// <returns>Имя файла ревизии</returns>
         internal static string GetFileName(RevisionInfo info)
         {
-            if (ConfigFile.isLoad)
+            if (Configuration.isLoad)
             {
-                if (!Directory.Exists(ConfigFile.versionDirectory))
-                    Directory.CreateDirectory(ConfigFile.versionDirectory);
-                return ConfigFile.versionDirectory + @"\" + info.GenerateDateTime.ToString("dd.MM.yyyy-") + info.GenerateDateTime.ToString("hh.mm-") + info.Author + ".xml";
+                if (!Directory.Exists(Configuration.versionDirectory))
+                    Directory.CreateDirectory(Configuration.versionDirectory);
+                return Configuration.versionDirectory + @"\" + info.GenerateDateTime.ToString("dd.MM.yyyy-") + info.GenerateDateTime.ToString("hh.mm-") + info.Author + ".xml";
             }
             else
                 throw new Exception("Не найден файл конфигурации");
         }
         /// <summary>
-        /// Уничтожение файлов версий и каталога их хранения
+        /// Уничтожение файлов версий и каталога их хранения.
         /// </summary>
         internal static void DeleteVersionDirectory()
         {
-            if (ConfigFile.isLoad)
+            if (Configuration.isLoad)
             {
-                if (Directory.Exists(ConfigFile.versionDirectory))
-                    Directory.Delete(ConfigFile.versionDirectory, true);
+                if (Directory.Exists(Configuration.versionDirectory))
+                    Directory.Delete(Configuration.versionDirectory, true);
             }
             else
                 throw new Exception("Не найден файл конфигурации");
         }
         /// <summary>
-        /// Загружает содержимое файла в одну строку
+        /// Загружает содержимое файла в одну строку.
         /// </summary>
         /// <param name="fileName">Имя файла, содержимое которого надо загрузить</param>
         /// <returns>Содержимое файла, преобразованное в одну строку через пробел</returns>
