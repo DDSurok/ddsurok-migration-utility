@@ -11,7 +11,6 @@ namespace migration
         {
             try
             {
-                ConfigFile.Load();
                 if (args.Length == 0)
                 {
                     Program.PrintWrongMessage();
@@ -42,8 +41,8 @@ namespace migration
                             Migration.Forgot();
                             break;
                         case "--list":
-                            Console.Write(RevisionList.GetCurrentRevision().ToString("0000+ ") + "Current revision\n\n");
-                            foreach (RevisionInfo info in RevisionList.GetReverseRevisionList())
+                            Console.Write(Migration.GetCurrentRevision().ToString("0000+ ") + "Current revision\n\n");
+                            foreach (RevisionInfo info in Migration.GetReverseRevisionList())
                             {
                                 foreach (string s in info.ToStrings())
                                 {

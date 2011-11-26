@@ -8,13 +8,13 @@ namespace migration
     /// <summary>
     /// Механизмы получения списка версий.
     /// </summary>
-    public static class RevisionList
+    internal static class RevisionList
     {
         /// <summary>
         /// Получить список всех ревизий.
         /// </summary>
         /// <returns>Список ревизий</returns>
-        public static List<RevisionInfo> GetRevisionList()
+        internal static List<RevisionInfo> GetRevisionList()
         {
             List<RevisionInfo> returnList = new List<RevisionInfo>();
             int i = 0;
@@ -38,7 +38,7 @@ namespace migration
         /// Получить список всех ревизий в обратном порядке.
         /// </summary>
         /// <returns>Список ревизий</returns>
-        public static List<RevisionInfo> GetReverseRevisionList()
+        internal static List<RevisionInfo> GetReverseRevisionList()
         {
             List<RevisionInfo> returnList = new List<RevisionInfo>();
             int i = 0;
@@ -62,7 +62,7 @@ namespace migration
         /// Получить номер ревизии, текущей для базы данных
         /// </summary>
         /// <returns>Номер из списка ревизий. -1 если в базе нет версии или версия базы отсутствует в системе</returns>
-        public static int GetCurrentRevision()
+        internal static int GetCurrentRevision()
         {
             try
             {

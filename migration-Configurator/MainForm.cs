@@ -15,19 +15,18 @@ namespace migration
         {
             InitializeComponent();
             this.ReloadServerList();
-            ConfigFile.Load();
-            if (ConfigFile.isLoad)
+            if (Migration.IsLoad)
             {
                 // Запись информации о базе данных
                 // Имя базы данных неизменно для проекта
-                this.DatabaseComboBox.Text = ConfigFile.databaseName;
+                this.DatabaseComboBox.Text = Migration.DatabaseName;
                 this.DatabaseComboBox.Enabled = false;
                 this.btnUpdateDatabaseList.Enabled = false;
 
                 // Заполнение информации о имени сервера и репозитории
-                this.ServerComboBox.SelectedIndex = this.ServerComboBox.FindString(ConfigFile.serverName);
-                this.Directory.Text = ConfigFile.versionDirectory;
-                this.NickName.Text = ConfigFile.nickName;
+                this.ServerComboBox.SelectedIndex = this.ServerComboBox.FindString(Migration.ServerName);
+                this.Directory.Text = Migration.VersionDirectory;
+                this.NickName.Text = Migration.NickName;
             }
             else
                 this.ReloadDatabaseList();
@@ -73,12 +72,12 @@ namespace migration
             if (!this.btnUpdateDatabaseList.Enabled)
             {
                 // Файл конфигурации существовал
-                ConfigFile.Write(this.ServerComboBox.SelectedItem.ToString(), this.Directory.Text, this.NickName.Text);
+                Migration.WriteConfiguration(this.ServerComboBox.SelectedItem.ToString(), this.Directory.Text, this.NickName.Text);
             }
             else
             {
                 // Файл конфигурации не существовал
-                ConfigFile.Write(this.ServerComboBox.SelectedItem.ToString(), this.DatabaseComboBox.SelectedItem.ToString(), this.Directory.Text, this.NickName.Text);
+                Migration.WriteConfiguration(this.ServerComboBox.SelectedItem.ToString(), this.DatabaseComboBox.SelectedItem.ToString(), this.Directory.Text, this.NickName.Text);
             }
         }
         

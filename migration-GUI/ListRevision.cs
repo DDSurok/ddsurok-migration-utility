@@ -66,21 +66,13 @@ namespace migration
         /// </summary>
         private void ReloadListOfRevisions()
         {
-            this.revisionList = RevisionList.GetReverseRevisionList();
-            this.currentRevision = RevisionList.GetCurrentRevision();
+            this.revisionList = Migration.GetReverseRevisionList();
+            this.currentRevision = Migration.GetCurrentRevision();
         }
         
         public ListRevision()
         {
             InitializeComponent();
-            try
-            {
-                ConfigFile.Load(); // TODO: В дальнейшем - удалить
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
         }
 
         private void ListRevision_Shown(object sender, EventArgs e)

@@ -34,9 +34,9 @@ namespace migration
         public ShowDiff()
         {
             InitializeComponent();
-            connection = new SqlConnection("Data Source=" + ConfigFile.serverName + ";Integrated Security=True");
+            connection = new SqlConnection("Data Source=" + Migration.ServerName + ";Integrated Security=True");
             connection.Open();
-            connection.ChangeDatabase(ConfigFile.databaseName);
+            connection.ChangeDatabase(Migration.DatabaseName);
             ds1 = new DataSet();
             da1 = new SqlDataAdapter("SELECT * FROM [dds].[up]", connection);
             SqlCommandBuilder builder = new SqlCommandBuilder(da1);
