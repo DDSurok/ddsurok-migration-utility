@@ -52,6 +52,10 @@
       <Project>{A0CBA486-0C46-427F-811A-4D487D0ACE95}</Project>
       <Name>Migration.dll</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SqlCLR\SqlCLR.csproj">
+      <Project>{864971E9-6CC3-4570-9598-42D09E5DFD4B}</Project>
+      <Name>SqlCLR</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

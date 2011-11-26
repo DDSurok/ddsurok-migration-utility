@@ -54,14 +54,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database --Fix.cs" />
-    <Compile Include="Database --other.cs" />
+    <Compile Include="DatabaseAdapter.cs" />
     <Compile Include="Fix.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Functions.cs" />
     <Compile Include="Migration --facade--.cs" />
     <Compile Include="Init.cs" />
-    <Compile Include="Database --Init.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RevisionInfo.cs" />
     <Compile Include="RevisionList.cs" />

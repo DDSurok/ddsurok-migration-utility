@@ -1,0 +1,14 @@
+syntax: glob
+migration-Configurator/bin/
+migration-Configurator/obj/
+migration-console/obj/
+migration-console/bin/
+migration-GUI/obj/
+migration-GUI/bin/
+Migration.dll/bin/
+Migration.dll/obj/
+migration-GUI/bin/
+migration-GUI/obj/
+Diplom2011.suo
+SqlCLR/bin/
+SqlCLR/obj/

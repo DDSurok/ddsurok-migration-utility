@@ -20,10 +20,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{EF522A83-066
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlCLR", "SqlCLR\SqlCLR.csproj", "{864971E9-6CC3-4570-9598-42D09E5DFD4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceScriptGenerator", "ServiceScriptGenerator\ServiceScriptGenerator.csproj", "{3E7FE675-913D-4CAD-AA2D-31048ABA5DC5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipeServer", "PipeServer\PipeServer.csproj", "{110BD213-41E6-4EEA-9B82-40B03EB9D20D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "migration-Configurator", "migration-Configurator\migration-Configurator.csproj", "{70518869-6408-4999-A386-811E1678462F}"
 EndProject
 Global
@@ -76,26 +72,6 @@ Global
 		{864971E9-6CC3-4570-9598-42D09E5DFD4B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{864971E9-6CC3-4570-9598-42D09E5DFD4B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{864971E9-6CC3-4570-9598-42D09E5DFD4B}.Release|x86.ActiveCfg = Release|Any CPU
-		{3E7FE675-913D-4CAD-AA2D-31048ABA5DC5}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{3E7FE675-913D-4CAD-AA2D-31048ABA5DC5}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{3E7FE675-913D-4CAD-AA2D-31048ABA5DC5}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{3E7FE675-913D-4CAD-AA2D-31048ABA5DC5}.Debug|x86.ActiveCfg = Debug|x86
-		{3E7FE675-913D-4CAD-AA2D-31048ABA5DC5}.Debug|x86.Build.0 = Debug|x86
-		{3E7FE675-913D-4CAD-AA2D-31048ABA5DC5}.Release|Any CPU.ActiveCfg = Release|x86
-		{3E7FE675-913D-4CAD-AA2D-31048ABA5DC5}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{3E7FE675-913D-4CAD-AA2D-31048ABA5DC5}.Release|Mixed Platforms.Build.0 = Release|x86
-		{3E7FE675-913D-4CAD-AA2D-31048ABA5DC5}.Release|x86.ActiveCfg = Release|x86
-		{3E7FE675-913D-4CAD-AA2D-31048ABA5DC5}.Release|x86.Build.0 = Release|x86
-		{110BD213-41E6-4EEA-9B82-40B03EB9D20D}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{110BD213-41E6-4EEA-9B82-40B03EB9D20D}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{110BD213-41E6-4EEA-9B82-40B03EB9D20D}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{110BD213-41E6-4EEA-9B82-40B03EB9D20D}.Debug|x86.ActiveCfg = Debug|x86
-		{110BD213-41E6-4EEA-9B82-40B03EB9D20D}.Debug|x86.Build.0 = Debug|x86
-		{110BD213-41E6-4EEA-9B82-40B03EB9D20D}.Release|Any CPU.ActiveCfg = Release|x86
-		{110BD213-41E6-4EEA-9B82-40B03EB9D20D}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{110BD213-41E6-4EEA-9B82-40B03EB9D20D}.Release|Mixed Platforms.Build.0 = Release|x86
-		{110BD213-41E6-4EEA-9B82-40B03EB9D20D}.Release|x86.ActiveCfg = Release|x86
-		{110BD213-41E6-4EEA-9B82-40B03EB9D20D}.Release|x86.Build.0 = Release|x86
 		{70518869-6408-4999-A386-811E1678462F}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{70518869-6408-4999-A386-811E1678462F}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{70518869-6408-4999-A386-811E1678462F}.Debug|Mixed Platforms.Build.0 = Debug|x86
