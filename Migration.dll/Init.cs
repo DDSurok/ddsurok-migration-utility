@@ -5,29 +5,29 @@ using Microsoft.SqlServer.Management.Smo;
 
 namespace migration
 {
-    static public class cInit
+    internal static class cInit
     {
         /// <summary>
         /// Хранит информацию о текущей ревизии базы данных.
         /// </summary>
-        static private RevisionInfo currentRevision;
+        private static RevisionInfo currentRevision;
         /// <summary>
         /// Класс доступа к файлу новой ревизии.
         /// </summary>
-        static private XmlWriter output;
+        private static XmlWriter output;
         /// <summary>
         /// Класс доступа к серверу посредством SMO.
         /// </summary>
-        static private Server server;
+        private static Server server;
         /// <summary>
         /// Класс доступа к базе данных посредством SMO.
         /// </summary>
-        static private Database database;
+        private static Database database;
         /// <summary>
         /// Основной метод класса. Выполняет создание базовой ревизии.
         /// </summary>
         /// <param name="Comment">Комментарий новой ревизии</param>
-        static internal void _Main(string Comment)
+        internal static void _Main(string Comment)
         {
             functions.DeleteVersionDirectory();
             cInit.currentRevision = RevisionInfo.GenerateRevisionInfo(Comment);

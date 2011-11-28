@@ -4,7 +4,7 @@ using System;
 
 namespace migration
 {
-    public static class UpDown
+    internal static class UpDown
     {
         /// <summary>
         /// Хранит номер текущей ревизии базы данных.

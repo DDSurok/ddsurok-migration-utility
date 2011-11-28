@@ -3,21 +3,21 @@ using System.Xml;
 
 namespace migration
 {
-    public static class cFix
+    internal static class cFix
     {
         /// <summary>
         /// Хранит информацию о текущей ревизии базы данных.
         /// </summary>
-        static private RevisionInfo currentRevision;
+        private static RevisionInfo currentRevision;
         /// <summary>
         /// Класс доступа к файлу новой ревизии.
         /// </summary>
-        static private XmlWriter output;
+        private static XmlWriter output;
         /// <summary>
         /// Основной метод класса. Выполняет фиксацию изменений в новую ревизию.
         /// </summary>
         /// <param name="Comment">Комментарий новой ревизии</param>
-        static internal void _Main(string Comment)
+        internal static void _Main(string Comment)
         {
             if (DatabaseAdapter.GetCountChanges() > 0)    // Если изменения есть, то начинаем
             {
@@ -42,7 +42,7 @@ namespace migration
         /// <summary>
         /// Запись заголовка записи в XML.
         /// </summary>
-        static private void WriteXMLHeader()
+        private static void WriteXMLHeader()
         {
             cFix.output.WriteStartElement("Revision");
             cFix.output.WriteAttributeString("Database", Configuration.databaseName);
@@ -56,7 +56,7 @@ namespace migration
         /// <summary>
         /// Записываем в XML скрипты повышения.
         /// </summary>
-        static public void WriteScriptsUp()
+        internal static void WriteScriptsUp()
         {
             cFix.output.WriteStartElement("UpScripts");
             int i = 1;
@@ -70,7 +70,7 @@ namespace migration
         /// <summary>
         /// Записываем в XML скрипты понижения.
         /// </summary>
-        static public void WriteScriptsDown()
+        internal static void WriteScriptsDown()
         {
             cFix.output.WriteStartElement("DownScripts");
             int i = 1;
@@ -83,7 +83,7 @@ namespace migration
         /// <summary>
         /// Запись подвала записи в XML.
         /// </summary>
-        static private void WriteXMLSuffix()
+        private static void WriteXMLSuffix()
         {
             cFix.output.WriteEndElement(); // "Revision"
             cFix.output.WriteEndDocument();

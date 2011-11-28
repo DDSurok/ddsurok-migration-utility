@@ -65,6 +65,7 @@ namespace migration
         /// Применить список скриптов.
         /// </summary>
         /// <param name="list">Список скриптов</param>
+        /// <param name="DestinationVersion">Номер версии-назначения</param>
         internal static void ApplyScripts(List<string> list, int DestinationVersion)
         {
             SqlTransaction tran = connection.BeginTransaction();

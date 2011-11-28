@@ -3,20 +3,27 @@ using System.Data.SqlTypes;
 using System.Xml;
 using System.Data.SqlClient;
 
-public class Options
+internal class Options
 {
-    public string
-        EventType,
-        ServerName,
-        DatabaseName,
-        ObjectName,
-        ObjectType,
-        SchemaName,
-        CommandText;
+    public string EventType;
+    public string ServerName;
+    public string DatabaseName;
+    public string ObjectName;
+    public string ObjectType;
+    public string SchemaName;
+    public string CommandText;
 }
 
+/// <summary>
+/// Стандартный класс для реализации функций, определяемых пользователем.
+/// </summary>
 public class UserDefinedFunctions
 {
+    /// <summary>
+    /// Реализует генерацию скриптов, отменяющих изменения.
+    /// </summary>
+    /// <param name="data">Данные о изменении</param>
+    /// <returns>Строка откатывающего скрипта</returns>
     [Microsoft.SqlServer.Server.SqlFunction]
     public static SqlString RollBackScript(SqlXml data)
     {
