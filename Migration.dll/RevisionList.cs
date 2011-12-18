@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 
-namespace migration
+namespace migration.Library
 {
     /// <summary>
     /// Механизмы получения списка версий.

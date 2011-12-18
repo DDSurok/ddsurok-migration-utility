@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Xml;
 
-namespace migration
+namespace migration.Library
 {
     internal static class cFix
     {

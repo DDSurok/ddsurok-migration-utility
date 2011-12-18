@@ -3,7 +3,7 @@ using System.Xml;
 using Microsoft.SqlServer.Management.Sdk.Sfc;
 using Microsoft.SqlServer.Management.Smo;
 
-namespace migration
+namespace migration.Library
 {
     internal static class cInit
     {

@@ -4,7 +4,7 @@ using System.Data;
 using System.Windows.Forms;
 using Microsoft.SqlServer.Management.Smo;
 
-namespace migration
+namespace migration.Configurator
 {
     public partial class MainForm : Form
     {

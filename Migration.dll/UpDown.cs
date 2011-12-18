@@ -2,7 +2,7 @@
 using System.Data.SqlClient;
 using System;
 
-namespace migration
+namespace migration.Library
 {
     internal static class UpDown
     {

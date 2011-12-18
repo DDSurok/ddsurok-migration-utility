@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 
-namespace migration
+namespace migration.GUI
 {
     public partial class ShowDiff : Form, IActiveComment
     {

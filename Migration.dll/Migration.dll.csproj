@@ -8,7 +8,7 @@
     <ProjectGuid>{A0CBA486-0C46-427F-811A-4D487D0ACE95}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>migration</RootNamespace>
+    <RootNamespace>migration.Library</RootNamespace>
     <AssemblyName>Migration</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

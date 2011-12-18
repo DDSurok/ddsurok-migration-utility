@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace migration
+namespace migration.Configurator
 {
     static class Program
     {

@@ -1,4 +1,4 @@
-﻿namespace migration
+﻿namespace migration.GUI
 {
     partial class EnterComment
     {

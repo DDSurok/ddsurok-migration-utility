@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace migration
+namespace migration.GUI
 {
     public interface IActiveComment
     {

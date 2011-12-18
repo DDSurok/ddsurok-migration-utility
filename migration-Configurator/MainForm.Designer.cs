@@ -1,4 +1,4 @@
-﻿namespace migration
+﻿namespace migration.Configurator
 {
     partial class MainForm
     {

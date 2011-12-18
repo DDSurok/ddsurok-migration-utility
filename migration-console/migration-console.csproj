@@ -8,7 +8,7 @@
     <ProjectGuid>{07976E55-3DA2-4B33-8A4E-BABD14C04C45}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>migration</RootNamespace>
+    <RootNamespace>migration.Console</RootNamespace>
     <AssemblyName>migration-console</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>

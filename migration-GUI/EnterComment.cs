@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace migration
+namespace migration.GUI
 {
     public partial class EnterComment : Form
     {

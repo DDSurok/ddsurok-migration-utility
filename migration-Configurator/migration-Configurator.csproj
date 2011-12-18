@@ -8,7 +8,7 @@
     <ProjectGuid>{70518869-6408-4999-A386-811E1678462F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>migration</RootNamespace>
+    <RootNamespace>migration.Configurator</RootNamespace>
     <AssemblyName>migration-Configurator</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

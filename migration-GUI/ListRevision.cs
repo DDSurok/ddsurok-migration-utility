@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace migration
+namespace migration.GUI
 {
     public partial class ListRevision : Form, IActiveComment
     {
         public string ActiveComment { get; set; }
-        List<RevisionInfo> _revisionList;
-        List<RevisionInfo> revisionList
+        List<Library.RevisionInfo> _revisionList;
+        List<Library.RevisionInfo> revisionList
         {
             get
             {
@@ -25,7 +25,7 @@ namespace migration
                 this._revisionList = value;
                 this.Revisions.BeginUpdate();
                 this.Revisions.Items.Clear();
-                foreach (RevisionInfo info in this._revisionList)
+                foreach (Library.RevisionInfo info in this._revisionList)
                 {
                     this.Revisions.Items.Add(info.ToString());
                 }
